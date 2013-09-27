@@ -1,8 +1,9 @@
 TwitterBots = new Meteor.Collection('twitter-bots');
 
 TwitterBots.register = function() {
-  var userId = Meteor.userId();
+  // request twitter credentials
   Twitter.requestCredential(function (twitterKey) {
+    // On callback talk to server with credentials and setup bot
     Meteor.call('registerBot', twitterKey);
   });
   // return TwitterBots.insert({name: botName, owner: userId});
@@ -24,16 +25,21 @@ TwitterBots.allow({
 });
 
 if (Meteor.isClient) {
-
+  Meteor.subscribe('twitter-bots');
 }
 if (Meteor.isServer) {
+  Meteor.publish("twitter-bots", function () {
+    return TwitterBots.find({owner: this.userId}, {fields: {accessToken: 0, accessTokenSecret: 0}});
+  });
+
+
+
   Meteor.startup(function () {
     Meteor.methods({
       registerBot: function(twitterKey) {
         var twitterResult = Twitter.retrieveCredential(twitterKey);
-        console.log("server registerBot called " + console.dir(twitterResult));
-        var bot_attrs = _.extend(twitterResult.serviceData, {owner: Meteor.userId()});
         if (!TwitterBots.findOne({}, {id: twitterResult.serviceData.id})) {
+          _.extend(twitterResult.serviceData, {owner: Meteor.userId()});
           TwitterBots.insert(twitterResult.serviceData);
         }
         return true;

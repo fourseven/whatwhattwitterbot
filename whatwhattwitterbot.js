@@ -4,7 +4,7 @@ if (Meteor.isClient) {
   };
 
   Template.hello.events({
-    'click input' : function () {
+    'click input[data-add-bot]' : function () {
       // template data, if any, is available in 'this'
       TwitterBots.register();
     }
