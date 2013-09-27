@@ -13,7 +13,7 @@
   {{#modal bgcolor='white'}}
     <p>This appears in the modal, and the bgcolor should be {{bgcolor}}.</p>
   {{/modal}}
-  <input type="button" value="Click" class="pure-button" />
+  <input type="button" value="Add another twitter user" class="pure-button" />
   {{> twitterBots}}
 </template>
 
@@ -29,7 +29,7 @@
 
 <template name="twitterBots">
   {{#each bots}}
-    <span>Name: {{name}}</span>
+    <span>Name: @{{screenName}}</span>
     <span>Owner ID: {{owner}}</span>
   {{/each}}
 </template>

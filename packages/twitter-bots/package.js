@@ -3,7 +3,7 @@ Package.describe({
 });
 
 Package.on_use(function (api, where) {
-  api.use(['standard-app-packages', 'accounts-base', 'accounts-twitter'], ['client', 'server']);
+  api.use(['standard-app-packages', 'accounts-base', 'accounts-oauth', 'twitter', 'underscore'], ['client', 'server']);
   api.add_files('twitter-bots.js', ['client', 'server']);
 
   api.export('TwitterBots');
