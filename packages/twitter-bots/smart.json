@@ -1,0 +1,13 @@
+{
+  "name": "twitter-bots",
+  "description": "",
+  "homepage": "",
+  "author": "",
+  "version": "0.0.1",
+  "git": "",
+  "packages": {
+    "twitter-js-client": {
+      "path": "/Users/mathew/Development/TwitterJSClient"
+    }
+  }
+}

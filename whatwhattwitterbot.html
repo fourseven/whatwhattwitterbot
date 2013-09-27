@@ -1,0 +1,35 @@
+<head>
+  <title>whatwhattwitterbot</title>
+</head>
+
+<body>
+  {{> hello}}
+</body>
+
+<template name="hello">
+  {{loginButtons}}
+  <h1>Hello World!</h1>
+  {{greeting}}
+  {{#modal bgcolor='white'}}
+    <p>This appears in the modal, and the bgcolor should be {{bgcolor}}.</p>
+  {{/modal}}
+  <input type="button" value="Click" class="pure-button" />
+  {{> twitterBots}}
+</template>
+
+<template name="modalLayout">
+  <div class="modal-container">
+    <div class="modal-bg"></div>
+    <div class="modal-body" style="background-color: {{bgcolor}}">
+      {{yield}}
+    </div>
+  </div>
+</template>
+
+
+<template name="twitterBots">
+  {{#each bots}}
+    <span>Name: {{name}}</span>
+    <span>Owner ID: {{owner}}</span>
+  {{/each}}
+</template>
