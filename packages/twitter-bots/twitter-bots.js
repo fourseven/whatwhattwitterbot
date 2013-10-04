@@ -41,13 +41,11 @@ if (Meteor.isServer) {
   Meteor.startup(function () {
     Meteor.methods({
       registerBot: function(twitterKey) {
-        var twitterResult = Twitter.retrieveCredential(twitterKey)
-            id;
+        var twitterResult = Twitter.retrieveCredential(twitterKey);
         var bot = TwitterBots.findOne({id: twitterResult.serviceData.id});
         if (!bot) {
           twitterResult.serviceData.owner = Meteor.userId();
-          id = TwitterBots.insert(twitterResult.serviceData);
-          return id;
+          return TwitterBots.insert(twitterResult.serviceData);
         } else {
           return bot._id;
         }

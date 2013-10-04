@@ -1,0 +1,14 @@
+.bot-button {
+  @extend .pure-u-1;
+  @extend .pure-button;
+  margin-bottom: 20px;
+
+  img {
+    vertical-align: middle;
+    border: 1px solid black;
+  }
+  .remove {
+    float: right;
+    font-size: 1.6em;
+  }
+}

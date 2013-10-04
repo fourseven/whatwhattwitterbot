@@ -8,9 +8,14 @@ if (Meteor.isClient) {
   Template.hello.showSchedules = function() {
     return !!Session.get('currentBotId');
   };
+  Template.hello.botName = function() {
+    var bot = TwitterBots.findOne({_id: Session.get('currentBotId')});
+    if (!bot) return "";
+    return bot.screenName;
+  };
 
   Template.hello.events({
-    'click input[data-add-bot]' : function () {
+    'click [data-add-bot]' : function () {
       // template data, if any, is available in 'this'
       TwitterBots.register();
     },
@@ -26,16 +31,19 @@ if (Meteor.isClient) {
   };
 
   Template.twitterBots.events({
+    'click .remove': function(event) {
+      event.preventDefault();
+      TwitterBots.remove({_id: this._id});
+    },
     'click .bot-button': function (event) {
       Session.set('currentBotId', this._id);
     }
-  })
+  });
 
   var userWasLoggedIn = false;
   Deps.autorun(function (c) {
     if(!Meteor.userId()) {
       if(userWasLoggedIn) {
-        console.log('Clean up');
         Session.set('currentBotId', null);
       }
     } else {
@@ -44,6 +52,14 @@ if (Meteor.isClient) {
         Session.set('currentBotId', bot[0]._id);
       }
       userWasLoggedIn = true;
+    }
+  });
+
+  // Reset active bot if bot gets removed.
+  Deps.autorun(function (c) {
+    var bot = TwitterBots.findOne({_id: Session.get('currentBotId')});
+    if (!bot) {
+      Session.set('currentBotId', null);
     }
   });
 }
