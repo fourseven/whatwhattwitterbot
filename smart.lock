@@ -2,13 +2,13 @@
   "meteor": {},
   "dependencies": {
     "basePackages": {
-      "purecss": {}
+      "scss": {}
     },
     "packages": {
-      "purecss": {
-        "git": "https://github.com/MikkoVirenius/meteor-purecss.git",
-        "tag": "v0.3.0",
-        "commit": "1e9d4e1686efe1001960044c068a077f5e09241e"
+      "scss": {
+        "git": "https://github.com/fourseven/meteor-scss.git",
+        "tag": "v0.6.4.1",
+        "commit": "bf203edb83565943cc0c00a31d536de7094f312b"
       }
     }
   }

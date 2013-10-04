@@ -1,0 +1,12 @@
+header {
+  background-color: #e6e6e6;
+  @extend .pure-u-1;
+  .content {
+    @extend %content;
+    margin-top: 21px;
+    margin-bottom: 21px;
+  }
+}
+.brand {
+  font-weight: bold;
+}

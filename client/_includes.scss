@@ -1,0 +1,16 @@
+$color1: #9ae0d9;
+$color2: #bcda90;
+$color3: #d3878e;
+$color4: #9d7ecc;
+
+%content-padding {
+  margin: 40px auto 10px;
+  min-height: 400px;
+}
+%content {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 800px;
+  padding-left: 20px;
+  padding-right: 20px;
+}

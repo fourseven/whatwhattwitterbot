@@ -7,14 +7,48 @@
 </body>
 
 <template name="hello">
-  {{loginButtons}}
-  <h1>Hello World!</h1>
-  {{greeting}}
-  {{#modal bgcolor='white'}}
-    <p>This appears in the modal, and the bgcolor should be {{bgcolor}}.</p>
-  {{/modal}}
-  <input type="button" value="Add another twitter user" class="pure-button" data-add-bot />
-  {{> twitterBots}}
+  <div class="pure-g-r">
+    <header>
+      <div class="content">
+        <span class="brand">What What Twitter Bot</span>
+        <div class="pull-right">
+          {{loginButtons align="right"}}
+        </div>
+      </div>
+    </header>
+    <section class="banner">
+      <div class="content">
+        <h1>Welcome to What What Twitter Bot</h1>
+        <h2>We've made it easy to turn a regular twitter account into a twitter bot.</h2>
+        <h2>Give it a try by {{#unless showBots}}<a href="#" class="sign-in">signing in</a> and then {{/unless}}associating a twitter user below.</h2>
+      </div>
+    </section>
+    {{#if showBots}}
+    <section class="bots">
+      <div class="content">
+        <h1>Your bots</h1>
+        <input type="button" value="Add a twitter user" class="pure-button" data-add-bot />
+        {{> twitterBots}}
+      </div>
+    </section>
+    {{/if}}
+    {{#if showRules}}
+    <section class="rules">
+      <div class="content">
+        <h1>Your rules</h1>
+
+      </div>
+    </section>
+    {{/if}}
+    {{#if showSchedules}}
+    <section class="schedules">
+      <div class="content">
+        <h1>Your schedules</h1>
+
+      </div>
+    </section>
+    {{/if}}
+  </div>
 </template>
 
 <template name="modalLayout">
@@ -29,6 +63,8 @@
 
 <template name="twitterBots">
   {{#each bots}}
-    <span>Name: @{{screenName}}</span>
+    <div class="bot-button">
+      <span>Name: @{{screenName}}</span>
+    </div>
   {{/each}}
 </template>

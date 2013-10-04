@@ -4,8 +4,7 @@ Package.describe({
 
 Package.on_use(function (api) {
   api.use([
-    "layout",
-    "purecss"
+    "layout"
   ], "client");
 
   api.add_files([

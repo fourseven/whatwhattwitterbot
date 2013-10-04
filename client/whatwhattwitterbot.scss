@@ -1,0 +1,39 @@
+/* CSS declarations go here */
+@import "purecss";
+@import "utils";
+
+@import "includes";
+
+@import "header";
+@import "banner";
+
+
+* {
+  box-sizing: border-box;
+}
+
+h1, h2 {
+  font-weight: 200;
+}
+
+section {
+  font-size: 1.5em;
+  line-height: 1.4;
+  @extend .pure-u-1;
+  .content {
+    @extend %content;
+    @extend %content-padding;
+  }
+}
+
+.bots {
+  background-color: $color2;
+}
+
+.rules {
+  background-color: $color3;
+}
+
+.schedules {
+  background-color: $color4;
+}

@@ -4,7 +4,11 @@ TwitterBots.register = function() {
   // request twitter credentials
   Twitter.requestCredential(function (twitterKey) {
     // On callback talk to server with credentials and setup bot
-    Meteor.call('registerBot', twitterKey);
+    Meteor.call('registerBot', twitterKey, function (error, result) {
+      if (!error) {
+        Session.set('currentBotId', result);
+      }
+    });
   });
   // return TwitterBots.insert({name: botName, owner: userId});
 };
@@ -37,12 +41,19 @@ if (Meteor.isServer) {
   Meteor.startup(function () {
     Meteor.methods({
       registerBot: function(twitterKey) {
-        var twitterResult = Twitter.retrieveCredential(twitterKey);
-        if (!TwitterBots.findOne({}, {id: twitterResult.serviceData.id})) {
-          _.extend(twitterResult.serviceData, {owner: Meteor.userId()});
-          TwitterBots.insert(twitterResult.serviceData);
+        var twitterResult = Twitter.retrieveCredential(twitterKey)
+            id;
+        var bot = TwitterBots.findOne({id: twitterResult.serviceData.id});
+        if (!bot) {
+          twitterResult.serviceData.owner = Meteor.userId();
+          id = TwitterBots.insert(twitterResult.serviceData);
+          return id;
+        } else {
+          return bot._id;
         }
-        return true;
+      },
+      clearBots: function() {
+        TwitterBots.remove({});
       }
     });
     // code to run on server at startup
