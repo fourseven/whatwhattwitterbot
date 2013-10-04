@@ -38,3 +38,15 @@ section {
 .schedules {
   background-color: $color4;
 }
+
+
+.rule {
+  @extend .pure-u-1;
+  @extend .pure-button;
+  margin-bottom: 20px;
+
+  input[type='checkbox'] {
+    float: left;
+    margin-top: 7px;
+  }
+}

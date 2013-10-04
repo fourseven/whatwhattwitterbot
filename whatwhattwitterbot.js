@@ -11,7 +11,7 @@ if (Meteor.isClient) {
   Template.hello.botName = function() {
     var bot = TwitterBots.findOne({_id: Session.get('currentBotId')});
     if (!bot) return "";
-    return bot.screenName;
+    return "@" + bot.screenName;
   };
 
   Template.hello.events({
