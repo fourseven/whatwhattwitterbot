@@ -8,9 +8,12 @@
 @import "banner";
 @import "bots";
 
-
 * {
   box-sizing: border-box;
+}
+
+body {
+  text-shadow: 1px 0 0 rgba(255,255,255,0.5);
 }
 
 h1, h2 {
@@ -42,12 +45,16 @@ section {
   background-color: $color4;
 }
 
-
 .rule {
-  @extend .pure-u-1;
-  @extend .pure-button;
-  margin-bottom: 20px;
+  @include base-button;
 
+  input[type='checkbox'] {
+    float: left;
+    margin-top: 7px;
+  }
+}
+.schedule {
+  @include base-button;
   input[type='checkbox'] {
     float: left;
     margin-top: 7px;

@@ -1,7 +1,5 @@
 .bot-button {
-  @extend .pure-u-1;
-  @extend .pure-button;
-  margin-bottom: 20px;
+  @include base-button;
 
   img {
     vertical-align: middle;

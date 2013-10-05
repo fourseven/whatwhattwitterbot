@@ -14,3 +14,9 @@ $color4: #9d7ecc;
   padding-left: 20px;
   padding-right: 20px;
 }
+@mixin base-button {
+  @extend .pure-u-1;
+  @extend .pure-button;
+  padding: 0.9em 1.1em;
+  margin-bottom: 20px;
+}
