@@ -70,7 +70,7 @@
 <template name="twitterBots">
   <div class="bot-button" data-add-bot>Add a twitter user</div>
   {{#each bots}}
-    <div class="bot-button">
+    <div class="bot-button {{active}}">
       <img src="{{profile_image_url}}">
       <span>@{{screenName}}</span>
       <span class="remove">x</span>

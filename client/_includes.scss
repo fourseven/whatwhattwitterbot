@@ -19,4 +19,8 @@ $color4: #9d7ecc;
   @extend .pure-button;
   padding: 0.9em 1.1em;
   margin-bottom: 20px;
+
+  &.active {
+    @extend .pure-button-active;
+  }
 }

@@ -22,12 +22,18 @@ if (Meteor.isClient) {
     'click .banner .sign-in': function (event) {
       event.preventDefault();
       Accounts._loginButtonsSession.set('dropdownVisible', true);                                                                // 8
+      setTimeout(function () {
+        $("#login-email").focus();
+      }, 0);
       Deps.flush();
     }
   });
 
   Template.twitterBots.bots = function() {
     return TwitterBots.find();
+  };
+  Template.twitterBots.active = function() {
+    return (this._id === Session.get('currentBotId')) ? "active" : undefined;
   };
 
   Template.twitterBots.events({
