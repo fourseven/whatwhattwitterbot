@@ -34,6 +34,13 @@ section {
   background-color: $color2;
 }
 
+.collapse {
+  display: none;
+}
+input[type=checkbox]:checked ~ .collapse {
+  display: block;
+}
+
 .rules {
   background-color: $color3;
   .content {
