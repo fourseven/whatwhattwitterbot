@@ -1,6 +1,6 @@
 header {
   background-color: rgb(226,226,226);
-  border-bottom: 1px solid rgb(200,200,200);
+  border-bottom: 1px solid $border-color;
   @extend .pure-u-1;
   .content {
     @extend %content;

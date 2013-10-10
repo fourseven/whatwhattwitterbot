@@ -1,4 +1,27 @@
-TwitterBots = new Meteor.Collection('twitter-bots');
+TwitterBot = function (doc) {
+  _.extend(this, doc);
+};
+_.extend(TwitterBot.prototype, {
+  owner: function () {
+    return Meteor.users.findOne({_id: this.ownerId});
+  },
+
+  rules: function () {
+    return [];
+  },
+
+  schedules: function () {
+    return [];
+  }
+});
+
+
+// Turn twitter bot array into twitter bot objects
+TwitterBots = new Meteor.Collection('twitter-bots', {
+  transform: function (doc) {
+    return new TwitterBot(doc);
+  }
+});
 
 TwitterBots.register = function() {
   // request twitter credentials
@@ -10,21 +33,21 @@ TwitterBots.register = function() {
       }
     });
   });
-  // return TwitterBots.insert({name: botName, owner: userId});
+  // return TwitterBots.insert({name: botName, ownerId: userId});
 };
 
 TwitterBots.allow({
   insert: function (userId, doc) {
     if (!doc.name || TwitterBots.findOne({}, {name: doc.name})) return false;
-    return (userId && doc.owner === userId);
+    return (userId && doc.ownerId === userId);
   },
   update: function (userId, doc, fields, modifier) {
     // can only change your own documents
-    return doc.owner === userId;
+    return doc.ownerId === userId;
   },
   remove: function (userId, doc) {
     // can only remove your own documents
-    return true; //doc.owner === userId;
+    return true; //doc.ownerId === userId;
   }
 });
 
@@ -33,7 +56,7 @@ if (Meteor.isClient) {
 }
 if (Meteor.isServer) {
   Meteor.publish("twitter-bots", function () {
-    return TwitterBots.find({owner: this.userId}, {fields: {accessToken: 0, accessTokenSecret: 0}});
+    return TwitterBots.find({ownerId: this.userId}, {fields: {accessToken: 0, accessTokenSecret: 0}});
   });
 
 
@@ -44,7 +67,7 @@ if (Meteor.isServer) {
         var twitterResult = Twitter.retrieveCredential(twitterKey);
         var bot = TwitterBots.findOne({id: twitterResult.serviceData.id});
         if (!bot) {
-          twitterResult.serviceData.owner = Meteor.userId();
+          twitterResult.serviceData.ownerId = Meteor.userId();
           return TwitterBots.insert(twitterResult.serviceData);
         } else {
           return bot._id;
