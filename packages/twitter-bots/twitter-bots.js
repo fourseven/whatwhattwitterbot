@@ -47,7 +47,7 @@ TwitterBots.allow({
   },
   remove: function (userId, doc) {
     // can only remove your own documents
-    return true; //doc.ownerId === userId;
+    return doc.ownerId === userId;
   }
 });
 
@@ -60,8 +60,11 @@ if (Meteor.isServer) {
   });
 
 
-
+  // code to run on server at startup
   Meteor.startup(function () {
+    // Allow twitter profile images
+    BrowserPolicy.content.allowImageOrigin("http://*.twimg.com");
+
     Meteor.methods({
       registerBot: function(twitterKey) {
         var twitterResult = Twitter.retrieveCredential(twitterKey);
@@ -77,6 +80,5 @@ if (Meteor.isServer) {
         TwitterBots.remove({});
       }
     });
-    // code to run on server at startup
   });
 }
