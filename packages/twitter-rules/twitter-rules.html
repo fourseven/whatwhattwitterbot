@@ -1,0 +1,51 @@
+<template name="ruleRepeat">
+  <form class="rule"><input type="checkbox" id="rule-repeat" data-collapse {{checkedHelper 'active'}}/><label for="rule-repeat">Repeat another user's tweets</label>
+    <div class="collapse">
+      <p>I want to copy @<input type="text" name="repeatSource" value="{{repeatSource}}" /></p>
+      <p> and include <label for="repeatMentions"><input type="checkbox" name="repeatMentions" id="repeatMentions" {{checkedHelper 'repeatMentions'}} />mentions</label></p>
+      <input type="submit" class="pure-button" value="Update" />
+    </div>
+  </form>
+</template>
+
+<template name="twitterRules">
+  <div class="content">
+    <h1>Your rules for {{botName}}</h1>
+      {{> ruleRepeat}}
+      <form class="rule">
+        <input type="checkbox" id="rule-retweet" data-collapse /><label for="rule-retweet">Retweet another user's favourites</label>
+        <div class="collapse">Collapse
+          <input type="submit" class="pure-button" value="Update" />
+        </div>
+
+      </form>
+      <form class="rule">
+        <input type="checkbox" id="rule-respond" data-collapse /><label for="rule-respond">Automatically respond to interactions with bot</label>
+        <div class="collapse">Collapse
+          <input type="submit" class="pure-button" value="Update" />
+        </div>
+
+      </form>
+      <form class="rule">
+        <input type="checkbox" id="rule-keywords" data-collapse /><label for="rule-keywords">Automatically respond to keywords</label>
+        <div class="collapse">Collapse
+          <input type="submit" class="pure-button" value="Update" />
+        </div>
+
+      </form>
+      <form class="rule">
+        <input type="checkbox" id="rule-keywords-rt" data-collapse /><label for="rule-keywords-rt">Automatically retweet keywords</label>
+        <div class="collapse">Collapse
+          <input type="submit" class="pure-button" value="Update" />
+        </div>
+
+      </form>
+      <form class="rule">
+        <input type="checkbox" id="rule-tweet" data-collapse /><label for="rule-tweet">Tweet these things</label>
+        <div class="collapse">Collapse
+          <input type="submit" class="pure-button" value="Update" />
+        </div>
+
+      </form>
+  </div>
+</template>

@@ -1,11 +1,13 @@
 Package.describe({
-  summary: "Twitter official npm package"
+  summary: "Twit npm package"
 });
 // file: package.js
 Npm.depends({
-    'twitter': '0.1.18'
+    'twit': '1.1.11'
 });
 
 Package.on_use(function(api) {
-    api.add_files('twitter-api.js', 'server');
+  api.add_files('twitter-api.js', 'server');
+
+  api.export('twitApi');
 });

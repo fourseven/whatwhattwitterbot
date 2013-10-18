@@ -11,5 +11,6 @@ accounts-password
 accounts-ui
 twitter-bots
 scss
-twitter-api
 browser-policy
+twitter-api
+twitter-rules

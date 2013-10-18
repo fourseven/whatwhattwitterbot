@@ -56,7 +56,7 @@ input[type=checkbox]:checked ~ .collapse {
 .rule {
   @include base-button;
 
-  input[type='checkbox'] {
+  [data-collapse] {
     float: left;
     margin-top: 7px;
   }
@@ -64,6 +64,9 @@ input[type=checkbox]:checked ~ .collapse {
     margin-top: $vertical-padding;
     padding-top: $vertical-padding;
     border-top: 1px solid $border-color;
+  }
+  .pure-button {
+    background-color: $color1;
   }
 }
 .schedule {

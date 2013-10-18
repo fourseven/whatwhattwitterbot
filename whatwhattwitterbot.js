@@ -76,5 +76,10 @@ if (Meteor.isServer) {
     Accounts.loginServiceConfiguration.remove({});
     var config = JSON.parse(Assets.getText('oauth.json'));
     Accounts.loginServiceConfiguration.insert(config);
+    var serverConfig = JSON.parse(Assets.getText('oauth.json'));
+    twitApi.config({
+      consumer_key:         serverConfig.consumerKey,
+      consumer_secret:      serverConfig.secret,
+    });
   });
 }

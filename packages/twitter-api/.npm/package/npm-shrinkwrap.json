@@ -1,16 +1,10 @@
 {
   "dependencies": {
-    "twitter": {
-      "version": "0.1.18",
+    "twit": {
+      "version": "1.1.11",
       "dependencies": {
         "oauth": {
-          "version": "0.9.10"
-        },
-        "cookies": {
-          "version": "0.3.6"
-        },
-        "keygrip": {
-          "version": "0.2.4"
+          "version": "0.9.9"
         }
       }
     }
