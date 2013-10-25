@@ -1,21 +1,68 @@
 TwitterRule = function (doc) {
   _.extend(this, doc);
+  this.initTwitterClient();
 };
+
+_.extend(TwitterRule.prototype, {
+  initTwitterClient: function () {
+    console.log("Initializing Twitter Client");
+    var bot = this.bot();
+    if (bot && Meteor.isServer) {
+      var config = {
+        access_token:         bot.accessToken,
+        access_token_secret:  bot.accessTokenSecret
+        };
+      this.twitterClient = twitApi.initForBot(config);
+    }
+  }
+});
+
+var surrogate = function(){};
+surrogate.prototype = TwitterRule.prototype;
 
 TwitterRepeatRule = function (doc) {
-  TwitterRule.call(this);
+  TwitterRule.call(this, doc);
 };
-
-// inherit TwitterRule
-TwitterRepeatRule.prototype = new TwitterRule();
-
-// correct the constructor pointer because it points to Person
+TwitterRepeatRule.prototype = new surrogate();
 TwitterRepeatRule.prototype.constructor = TwitterRepeatRule;
-TwitterRepeatRule.prototype.start = function () {
-  console.log("starting repeat rule");
 
-};
+_.extend(TwitterRepeatRule.prototype, {
+  resolveTwitterUid: function() {
+    console.log("Resolving Twitter ID " + this.repeatSource);
+    if (this.repeatSource) {
+      var rule = this;
+      Meteor.call('resolveTwitterUid', this.repeatSource, this.botId, function (error, result) {
+        if (result) {
+          TwitterRules.update(rule._id, {$set: {repeatSourceId: result.id}});
+        }
+      });
+    }
+  },
 
+
+  startListening: function () {
+    console.log("Start listening");
+    this.stream = this.twitterClient.stream('statuses/filter', { follow: this.repeatSourceId });
+    this.stream.on('tweet', function(tweet) {
+      if (!tweet.in_reply_to_status_id) {
+        console.log(tweet);
+      }
+    });
+  },
+
+  start: function () {
+    console.log("starting repeat rule");
+    if (Meteor.isServer) {
+      if (this.twitterClient) {
+        if (!this.repeatSourceId) {
+          this.resolveTwitterUid();
+        } else {
+          this.startListening();
+        }
+      }
+    }
+  }
+});
 
 _.extend(TwitterRule.prototype, {
   start: function () {
@@ -23,6 +70,9 @@ _.extend(TwitterRule.prototype, {
   },
   stop: function () {
     console.log("stopping rule");
+  },
+  bot: function () {
+    return TwitterBots.findOne({_id: this.botId});
   }
 });
 
@@ -30,12 +80,36 @@ TwitterRules = new Meteor.Collection('twitter-rules', {
   transform: function (doc) {
     switch (doc.type) {
     case 'repeat':
+    console.log("made new repeat rule");
       return new TwitterRepeatRule(doc);
     default:
       return new TwitterRule(doc);
     }
   }
 });
+
+TwitterRules.start = function () {
+  var repeatRules = TwitterRules.find({type: 'repeat'});
+  var handle = repeatRules.observeChanges({
+    added: function (id, fields) {
+      var rule = TwitterRules.findOne({_id: id});
+      rule.start();
+    },
+    changed: function (id, fields) {
+      var rule = TwitterRules.findOne({_id: id});
+      if (_.has(fields, 'active')) {
+        (fields.active && rule.repeatSourceId) ? rule.start() : rule.stop();
+      }
+      if (_.has(fields, 'repeatSource')) {
+        rule.resolveTwitterUid();
+      }
+
+      if (_.has(fields, 'repeatSourceId')) {
+        (rule.active) ? rule.start() : rule.stop();
+      }
+    }
+  });
+};
 
 TwitterRules.allow({
   insert: function (userId, doc) {
@@ -78,14 +152,14 @@ if (Meteor.isClient) {
       return TwitterRules.findOne({_id: rules[type]});
     };
 
-    Template.ruleRepeat.created = function () {
-      setRuleToSession('repeat');
-    };
-
     Template.twitterRules.botName = function() {
       var bot = TwitterBots.findOne({_id: Session.get('currentBotId')});
       if (!bot) return "";
       return "@" + bot.screenName;
+    };
+
+    Template.ruleRepeat.created = function () {
+      setRuleToSession('repeat');
     };
 
     Template.ruleRepeat.repeatSource = function () {
@@ -133,19 +207,5 @@ if (Meteor.isServer) {
         TwitterRules.remove({});
       }
     });
-  });
-
-  var repeatRules = TwitterRules.find({type: 'repeat'});
-  var handle = repeatRules.observeChanges({
-    added: function (id, fields) {
-      var rule = TwitterRules.findOne({_id: id});
-      rule.start();
-    },
-    changed: function (id, fields) {
-      if (_.has(fields, 'active')) {
-        var rule = TwitterRules.findOne({_id: id});
-        (fields.active) ? rule.start() : rule.stop();
-      }
-    }
   });
 }

@@ -81,5 +81,6 @@ if (Meteor.isServer) {
       consumer_key:         serverConfig.consumerKey,
       consumer_secret:      serverConfig.secret,
     });
+    TwitterRules.start();
   });
 }

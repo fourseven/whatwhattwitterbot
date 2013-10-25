@@ -3,9 +3,12 @@ Package.describe({
 });
 
 Package.on_use(function (api, where) {
-  api.use(['underscore'], ['client', 'server']);
+  api.use(['underscore', 'twitter-bots', 'twitter-api'], ['client', 'server']);
   api.use(['templating'], 'client');
+
   api.add_files('twitter-rules.js', ['client', 'server']);
+
+  api.add_files('server/twitter-rules.js', 'server');
 
   api.add_files('twitter-rules.html', 'client');
 

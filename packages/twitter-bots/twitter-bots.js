@@ -59,7 +59,6 @@ if (Meteor.isServer) {
     return TwitterBots.find({ownerId: this.userId}, {fields: {accessToken: 0, accessTokenSecret: 0}});
   });
 
-
   // code to run on server at startup
   Meteor.startup(function () {
     // Allow twitter profile images
