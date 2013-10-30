@@ -1,28 +1,7 @@
-TwitterRule = (doc) ->
-  _.extend this, doc
-  @initTwitterClient()
-  return @
+class TwitterRepeatRule extends TwitterRule
+  constructor: (doc) ->
+    super
 
-_.extend TwitterRule::,
-  initTwitterClient: ->
-    console.log "Initializing Twitter Client"
-    bot = @bot()
-    if bot and Meteor.isServer
-      config =
-        access_token: bot.accessToken
-        access_token_secret: bot.accessTokenSecret
-
-      @twitterClient = twitApi.initForBot(config)
-
-surrogate = ->
-
-surrogate:: = TwitterRule::
-TwitterRepeatRule = (doc) ->
-  TwitterRule.call this, doc
-
-TwitterRepeatRule:: = new surrogate()
-TwitterRepeatRule::constructor = TwitterRepeatRule
-_.extend TwitterRepeatRule::,
   resolveTwitterUid: ->
     console.log "Resolving Twitter ID " + @repeatSource
     if @repeatSource
@@ -33,8 +12,6 @@ _.extend TwitterRepeatRule::,
             $set:
               repeatSourceId: result.id
 
-
-
   startListening: ->
     console.log "Start listening"
     rule = this
@@ -42,16 +19,13 @@ _.extend TwitterRepeatRule::,
       follow: @repeatSourceId
     )
     @stream.on "tweet", (tweet) ->
-      console.log "Typeof tweet user_id : " + typeof tweet.user.id + " " + tweet.user.id
-      console.log "Typeof repeatSourceId: " + typeof rule.repeatSourceId + " " + rule.repeatSourceId
-      if (not tweet.in_reply_to_status_id or rule.repeatMentions) and tweet.user.id is rule.repeatSourceId
+      if (!tweet.in_reply_to_status_id || rule.repeatMentions) && tweet.user.id == rule.repeatSourceId
         console.log tweet
       else
         console.log "Reply/RT caught, but not important. It was by: " + tweet.user.screen_name
 
-
   start: ->
-    console.log "starting repeat rule"
+    super
     if Meteor.isServer
       if @twitterClient
         unless @repeatSourceId
@@ -59,15 +33,6 @@ _.extend TwitterRepeatRule::,
         else
           @startListening()
 
-_.extend TwitterRule::,
-  start: ->
-    console.log "starting rule"
-
-  stop: ->
-    console.log "stopping rule"
-
-  bot: ->
-    TwitterBots.findOne _id: @botId
 
 TwitterRules = new Meteor.Collection "twitter-rules",
   transform: (doc) ->
