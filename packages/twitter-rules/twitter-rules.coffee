@@ -2,24 +2,25 @@ class TwitterRepeatRule extends TwitterRule
   constructor: (doc) ->
     super
 
+  resolveCallback: (error, result) =>
+    if result
+      TwitterRules.update @_id,
+        $set:
+          repeatSourceId: result.id
+
   resolveTwitterUid: ->
     console.log "Resolving Twitter ID " + @repeatSource
     if @repeatSource
-      rule = this
-      Meteor.call "resolveTwitterUid", @repeatSource, @botId, (error, result) ->
-        if result
-          TwitterRules.update rule._id,
-            $set:
-              repeatSourceId: result.id
+      Meteor.call "resolveTwitterUid", @repeatSource, @botId, @resolveCallback
+
+  createStream: ->
+    @stream ||= @twitterClient.stream("statuses/filter", {follow: @repeatSourceId})
 
   startListening: ->
     console.log "Start listening"
-    rule = this
-    @stream = @twitterClient.stream("statuses/filter",
-      follow: @repeatSourceId
-    )
-    @stream.on "tweet", (tweet) ->
-      if (!tweet.in_reply_to_status_id || rule.repeatMentions) && tweet.user.id == rule.repeatSourceId
+
+    @createStream().on "tweet", (tweet) =>
+      if (!tweet.in_reply_to_status_id || @repeatMentions) && tweet.user.id == @repeatSourceId
         console.log tweet
       else
         console.log "Reply/RT caught, but not important. It was by: " + tweet.user.screen_name

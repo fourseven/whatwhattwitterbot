@@ -13,34 +13,33 @@
 
 
 # Turn twitter bot array into twitter bot objects
-TwitterBots = new Meteor.Collection("twitter-bots",
+TwitterBots = new Meteor.Collection "twitter-bots",
   transform: (doc) ->
     new TwitterBot(doc)
-)
-TwitterBots.register = ->
-  # request twitter credentials
-  Twitter.requestCredential (twitterKey) ->
 
+_.extend TwitterBots,
+  credentialCallback: (twitterKey) =>
     # On callback talk to server with credentials and setup bot
-    Meteor.call "registerBot", twitterKey, (error, result) ->
-      Session.set "currentBotId", result  unless error
+    Meteor.call "registerBot", twitterKey, (error, result) =>
+      @registerCallback(result) unless error
+  registerCallback: (result) ->
+    Session.set "currentBotId", result
+
+ register: () ->
+  # request twitter credentials
+  Twitter.requestCredential TwitterBots.credentialCallback
 
 
 # return TwitterBots.insert({name: botName, ownerId: userId});
 TwitterBots.allow
   insert: (userId, doc) ->
-    return false  if not doc.name or TwitterBots.findOne({},
-      name: doc.name
-    )
-    userId and doc.ownerId is userId
-
+    if !doc.name || TwitterBots.findOne({}, {name: doc.name})
+      return false
+    userId && doc.ownerId == userId
   update: (userId, doc, fields, modifier) ->
-
     # can only change your own documents
     doc.ownerId is userId
-
   remove: (userId, doc) ->
-
     # can only remove your own documents
     doc.ownerId is userId
 
