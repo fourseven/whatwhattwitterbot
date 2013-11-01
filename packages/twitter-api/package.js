@@ -7,8 +7,9 @@ Npm.depends({
 });
 
 Package.on_use(function(api) {
+  api.use('coffeescript',['client','server']);
   api.use('underscore', 'server');
-  api.add_files('twitter-api.js', 'server');
+  api.add_files('twitter-api.coffee', 'server');
 
   api.export('twitApi');
 });

@@ -3,7 +3,7 @@ Package.describe({
 });
 
 Package.on_use(function (api, where) {
-  api.use(['underscore', 'coffeescript', 'twitter-bots', 'twitter-api'], ['client', 'server']);
+  api.use(['underscore', 'twitter-bots', 'twitter-api'], ['client', 'server']);
   api.use('coffeescript',['client','server']);
   api.use(['templating'], 'client');
 

@@ -3,8 +3,9 @@ Package.describe({
 });
 
 Package.on_use(function (api, where) {
+  api.use('coffeescript',['client','server']);
   api.use(['standard-app-packages', 'accounts-base', 'accounts-oauth', 'twitter', 'underscore'], ['client', 'server']);
-  api.add_files(['twitter-bots.js'], ['client', 'server']);
+  api.add_files(['twitter-bots.coffee'], ['client', 'server']);
 
   api.export(['TwitterBot', 'TwitterBots']);
 });

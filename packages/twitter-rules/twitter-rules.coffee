@@ -38,29 +38,30 @@ TwitterRules = new Meteor.Collection "twitter-rules",
   transform: (doc) ->
     TwitterRules.factory(doc)
 
-TwitterRules.start = ->
-  repeatRules = TwitterRules.find(type: "repeat")
-  handle = repeatRules.observeChanges
-    added: (id, fields) ->
-      rule = TwitterRules.findOne(_id: id)
-      rule.start()
+_.extend TwitterRules,
+  start: ->
+    repeatRules = TwitterRules.find(type: "repeat")
+    handle = repeatRules.observeChanges
+      added: (id, fields) ->
+        rule = TwitterRules.findOne(_id: id)
+        rule.start()
 
-    changed: (id, fields) ->
-      rule = TwitterRules.findOne(_id: id)
-      if _.has(fields, "active")
-        (if (fields.active and rule.repeatSourceId) then rule.start() else rule.stop())
-      if _.has(fields, "repeatSource")
-        rule.resolveTwitterUid()
-      if _.has(fields, "repeatSourceId")
-        (if (rule.active) then rule.start() else rule.stop())
+      changed: (id, fields) ->
+        rule = TwitterRules.findOne(_id: id)
+        if _.has(fields, "active")
+          (if (fields.active and rule.repeatSourceId) then rule.start() else rule.stop())
+        if _.has(fields, "repeatSource")
+          rule.resolveTwitterUid()
+        if _.has(fields, "repeatSourceId")
+          (if (rule.active) then rule.start() else rule.stop())
 
-TwitterRules.factory = (doc) ->
-  switch doc.type
-    when "repeat"
-      console.log "made new repeat rule"
-      new TwitterRepeatRule(doc)
-    else
-      new TwitterRule(doc)
+  factory: (doc) ->
+    switch doc.type
+      when "repeat"
+        console.log "made new repeat rule"
+        new TwitterRepeatRule(doc)
+      else
+        new TwitterRule(doc)
 
 TwitterRules.allow
   insert: (userId, doc) ->
