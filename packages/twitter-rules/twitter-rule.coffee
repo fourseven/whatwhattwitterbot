@@ -7,9 +7,7 @@ class @TwitterRule
     console.log "Initializing Twitter Client"
     bot = @bot()
     if bot and Meteor.isServer
-      config =
-        access_token: bot.accessToken
-        access_token_secret: bot.accessTokenSecret
+      config = bot.getAuth()
 
       @twitterClient = twitApi.initForBot(config)
   start: ->
@@ -17,4 +15,4 @@ class @TwitterRule
   stop: ->
     console.log "stopping rule"
   bot: ->
-    TwitterBots.findOne _id: @botId
+    TwitterBots.findOne(_id: @botId)

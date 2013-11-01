@@ -2,13 +2,19 @@
   "meteor": {},
   "dependencies": {
     "basePackages": {
-      "scss": {}
+      "scss": {},
+      "rosie": {}
     },
     "packages": {
       "scss": {
         "git": "https://github.com/fourseven/meteor-scss.git",
         "tag": "v0.6.4.1",
         "commit": "bf203edb83565943cc0c00a31d536de7094f312b"
+      },
+      "rosie": {
+        "git": "https://github.com/fourseven/meteor-rosie.git",
+        "tag": "v0.2.0.1",
+        "commit": "8b3d1059f6bf14ef5c62eb3a287eb2f67ed5f555"
       }
     }
   }

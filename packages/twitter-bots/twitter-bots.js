@@ -12,6 +12,13 @@ _.extend(TwitterBot.prototype, {
 
   schedules: function () {
     return [];
+  },
+
+  getAuth: function () {
+    return {
+      access_token: this.accessToken,
+      access_token_secret: this.accessTokenSecret
+    };
   }
 });
 
@@ -62,7 +69,7 @@ if (Meteor.isServer) {
   // code to run on server at startup
   Meteor.startup(function () {
     // Allow twitter profile images
-    BrowserPolicy.content.allowImageOrigin("http://*.twimg.com");
+    //BrowserPolicy.content.allowImageOrigin("http://*.twimg.com");
 
     Meteor.methods({
       registerBot: function(twitterKey) {

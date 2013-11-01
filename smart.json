@@ -1,5 +1,6 @@
 {
   "packages": {
-    "scss": {}
+    "scss": {},
+    "rosie": {}
   }
 }

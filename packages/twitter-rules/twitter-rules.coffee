@@ -36,12 +36,7 @@ class TwitterRepeatRule extends TwitterRule
 
 TwitterRules = new Meteor.Collection "twitter-rules",
   transform: (doc) ->
-    switch doc.type
-      when "repeat"
-        console.log "made new repeat rule"
-        new TwitterRepeatRule(doc)
-      else
-        new TwitterRule(doc)
+    TwitterRules.factory(doc)
 
 TwitterRules.start = ->
   repeatRules = TwitterRules.find(type: "repeat")
@@ -58,6 +53,14 @@ TwitterRules.start = ->
         rule.resolveTwitterUid()
       if _.has(fields, "repeatSourceId")
         (if (rule.active) then rule.start() else rule.stop())
+
+TwitterRules.factory = (doc) ->
+  switch doc.type
+    when "repeat"
+      console.log "made new repeat rule"
+      new TwitterRepeatRule(doc)
+    else
+      new TwitterRule(doc)
 
 TwitterRules.allow
   insert: (userId, doc) ->
