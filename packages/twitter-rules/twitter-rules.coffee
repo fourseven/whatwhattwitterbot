@@ -1,40 +1,3 @@
-class TwitterRepeatRule extends TwitterRule
-  constructor: (doc) ->
-    super
-
-  resolveCallback: (error, result) =>
-    if result
-      TwitterRules.update @_id,
-        $set:
-          repeatSourceId: result.id
-
-  resolveTwitterUid: ->
-    console.log "Resolving Twitter ID " + @repeatSource
-    if @repeatSource
-      Meteor.call "resolveTwitterUid", @repeatSource, @botId, @resolveCallback
-
-  createStream: ->
-    @stream ||= @twitterClient.stream("statuses/filter", {follow: @repeatSourceId})
-
-  startListening: ->
-    console.log "Start listening"
-
-    @createStream().on "tweet", (tweet) =>
-      if (!tweet.in_reply_to_status_id || @repeatMentions) && tweet.user.id == @repeatSourceId
-        console.log tweet
-      else
-        console.log "Reply/RT caught, but not important. It was by: " + tweet.user.screen_name
-
-  start: ->
-    super
-    if Meteor.isServer
-      if @twitterClient
-        unless @repeatSourceId
-          @resolveTwitterUid()
-        else
-          @startListening()
-
-
 TwitterRules = new Meteor.Collection "twitter-rules",
   transform: (doc) ->
     TwitterRules.factory(doc)
@@ -45,7 +8,7 @@ _.extend TwitterRules,
     handle = repeatRules.observeChanges
       added: (id, fields) ->
         rule = TwitterRules.findOne(_id: id)
-        rule.start()
+        rule.start() if rule.active
 
       changed: (id, fields) ->
         rule = TwitterRules.findOne(_id: id)
@@ -61,6 +24,9 @@ _.extend TwitterRules,
       when "repeat"
         console.log "made new repeat rule"
         new TwitterRepeatRule(doc)
+      when "hashtag"
+        console.log "made new hashtag rule"
+        new TwitterHashtagRule(doc)
       else
         new TwitterRule(doc)
 
@@ -113,16 +79,17 @@ if Meteor.isClient
       return ""  unless bot
       "@" + bot.screenName
 
-    Template.ruleRepeat.created = ->
-      setRuleToSession "repeat"
+    _.extend Template.ruleRepeat,
+      created: ->
+        setRuleToSession "repeat"
+      repeatSource: ->
+        rule = getRuleFromSession("repeat")
+        (if rule then rule.repeatSource else "")
 
-    Template.ruleRepeat.repeatSource = ->
-      rule = getRuleFromSession("repeat")
-      (if rule then rule.repeatSource else "")
-
-    Template.ruleRepeat.helpers checkedHelper: (objectName) ->
-      rule = getRuleFromSession("repeat")
-      (if (rule and rule[objectName]) then "checked='checked'" else `undefined`)
+    Template.ruleRepeat.helpers
+      checkedHelper: (objectName) ->
+        rule = getRuleFromSession("repeat")
+        (if (rule and rule[objectName]) then "checked='checked'" else `undefined`)
 
     Template.ruleRepeat.events
       "click [data-collapse]": (event) ->
@@ -139,7 +106,7 @@ if Meteor.isClient
         data = {}
         temp.map (x) ->
           data[x.name] = x.value
-
+        console.dir data
         Meteor.call "updateRule", currentBotId, "repeat", data
 
 
@@ -152,7 +119,7 @@ if Meteor.isServer
     # var Future = Npm.require('fibers/future');
     Meteor.methods
       updateRule: (currentBotId, type, values) ->
-        console.log "running update for " + type + " with values: " + console.dir(values)
+        console.log "running update for " + type + " with values: " + console.log(values)
         TwitterRules.upsert
           ownerId: Meteor.userId()
           botId: currentBotId

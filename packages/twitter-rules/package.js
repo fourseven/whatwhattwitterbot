@@ -7,7 +7,7 @@ Package.on_use(function (api, where) {
   api.use('coffeescript',['client','server']);
   api.use(['templating'], 'client');
 
-  api.add_files('twitter-rule.coffee', ['client', 'server']);
+  api.add_files('twitter-rule.coffee.md', ['client', 'server']);
   api.add_files('twitter-rules.coffee', ['client', 'server']);
 
   api.add_files('server/twitter-rules.js', 'server');

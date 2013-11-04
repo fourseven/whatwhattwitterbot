@@ -34,10 +34,11 @@
 
       </form>
       <form class="rule">
-        <input type="checkbox" id="rule-keywords-rt" data-collapse /><label for="rule-keywords-rt">Automatically retweet keywords</label>
-        <div class="collapse">Collapse
-          <input type="submit" class="pure-button" value="Update" />
-        </div>
+        <input type="checkbox" id="rule-hashtag"  data-collapse {{checkedHelper 'active'}}/><label for="rule-hashtag">Automatically retweet keywords</label>
+      <div class="collapse">
+        <p>I want to retweet <input type="text" name="hashtag" value="{{hashtag}}" placeholder="#hashtag"/></p>
+        <input type="submit" class="pure-button" value="Update" />
+      </div>
 
       </form>
       <form class="rule">
