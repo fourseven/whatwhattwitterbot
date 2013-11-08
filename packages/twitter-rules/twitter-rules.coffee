@@ -98,7 +98,6 @@ if Meteor.isClient
         Meteor.call "updateRule", currentBotId, "repeat",
           active: value
 
-
       submit: (event) ->
         event.preventDefault()
         currentBotId = Session.get("currentBotId")
@@ -108,6 +107,37 @@ if Meteor.isClient
           data[x.name] = x.value
         console.dir data
         Meteor.call "updateRule", currentBotId, "repeat", data
+
+    Template.twitterRules.events
+      "dragstart [draggable]": (event) ->
+        console.log "dragstart"
+        event.target.style.opacity = '0.4'
+        event.dataTransfer.effectAllowed = 'copy'
+        event.dataTransfer.setData('text/plain', $(event.target).data('rule-type'))
+        event.dataTransfer.source = event.target
+
+      "dragend [draggable]": (event) ->
+        console.log "dragend"
+        event.target.style.opacity = '1.0'
+        event.preventDefault()
+
+      "dragover .rules-active": (event) ->
+        console.log "dragover"
+        event.preventDefault()
+
+      "drop": (event) ->
+        event.dataTransfer.dropEffect = "copy"
+        console.log "dropped #{event.target.innerHTML}"
+        event.preventDefault()
+        type = event.dataTransfer.getData('text/plain')
+        console.log TwitterRules.insert
+          type: type
+          botId: Session.get('currentBotId')
+          ownerId: Meteor.userId()
+        # if @dragSrcEl
+        #   @dragSrcEl.innerHTML = this.innerHTML
+        #   this.innerHTML = e.dataTransfer.getData('text/html')
+
 
 
 if Meteor.isServer
