@@ -18,16 +18,19 @@ TwitterBots = new Meteor.Collection "twitter-bots",
     new TwitterBot(doc)
 
 _.extend TwitterBots,
-  credentialCallback: (twitterKey) =>
+  credentialCallback: (twitterKey) ->
+    console.log("self")
     # On callback talk to server with credentials and setup bot
     Meteor.call "registerBot", twitterKey, (error, result) =>
       @registerCallback(result) unless error
   registerCallback: (result) ->
     Session.set "currentBotId", result
 
- register: () ->
-  # request twitter credentials
-  Twitter.requestCredential TwitterBots.credentialCallback
+  register: () ->
+    # request twitter credentials
+    console.log "asdf"
+    _credentialCallback = _.bind(@credentialCallback, @)
+    Twitter.requestCredential(_credentialCallback)
 
 
 # return TwitterBots.insert({name: botName, ownerId: userId});

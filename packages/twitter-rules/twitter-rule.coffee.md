@@ -26,6 +26,7 @@ Usual actions for the bots (to be overridden by superclass)
 
         start: ->
           console.log "starting rule"
+          return (@bot() && @twitterClient)
         stop: ->
           console.log "stopping rule"
 
@@ -57,6 +58,7 @@ Usual actions for the bots (to be overridden by superclass)
                 repeatSourceId: result.id
 
         createStream: ->
+          throw "twitterClient undefined" unless @twitterClient
           @stream ||= @twitterClient.stream("statuses/filter", {follow: @repeatSourceId})
 
         tweetCallback: (tweet) =>
@@ -66,16 +68,14 @@ Usual actions for the bots (to be overridden by superclass)
             @logAction(tweet)
 
         startListening: ->
-          super
-          @createStream().on "tweet", @tweetCallback
+          @createStream().on "tweet", @tweetCallback if super
 
         stopListening: ->
           super
           @createStream().stop()
 
         start: ->
-          super
-          if Meteor.isServer
+          if Meteor.isServer && super
             unless @repeatSourceId
               @resolveTwitterUid(@sourceName, @resolveCallback)
             else

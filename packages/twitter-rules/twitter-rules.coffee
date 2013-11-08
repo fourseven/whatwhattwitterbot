@@ -8,7 +8,7 @@ _.extend TwitterRules,
     handle = repeatRules.observeChanges
       added: (id, fields) ->
         rule = TwitterRules.findOne(_id: id)
-        rule.start() if rule.active
+        rule.start() if (rule.active && rule.repeatSourceId)
 
       changed: (id, fields) ->
         rule = TwitterRules.findOne(_id: id)
@@ -126,7 +126,6 @@ if Meteor.isServer
           type: "repeat"
         ,
           $set: values
-
 
       clearRules: ->
         TwitterRules.remove {}
