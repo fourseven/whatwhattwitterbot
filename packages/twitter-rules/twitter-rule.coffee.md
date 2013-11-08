@@ -42,6 +42,8 @@ Usual actions for the bots (to be overridden by superclass)
         nextAction: (tweet) ->
           console.log("nextAction called")
           console.log(tweet)
+          nextRule = TwitterRules.findOne { _id: @nextActionId }
+          nextRule.actionCallback(tweet) if nextRule
 
         logAction: (tweet) ->
           console.log("logAction called")
@@ -110,3 +112,46 @@ Usual actions for the bots (to be overridden by superclass)
         stop: ->
           super
           @stopListening() if Meteor.isServer
+
+      class @TwitterPostTweetRule extends TwitterRule
+
+        constructor: (doc) ->
+          super
+
+        actionCallback: (tweet) ->
+          @twitterClient.post "statuses/update", {status: tweet.text}, (err, reply) ->
+            if err
+              console.log err
+            else
+              console.log reply
+          super
+      class @TwitterRetweetRule extends TwitterRule
+
+        constructor: (doc) ->
+          super
+
+        actionCallback: (tweet) ->
+          @twitterClient.post "statuses/retweet/:id", { id: tweet.id_str }, (err, reply) ->
+            if err
+              console.log err
+            else
+              console.log reply
+          super
+      class @TwitterTweetFollowersRule extends TwitterRule
+
+        constructor: (doc) ->
+          super
+
+        actionCallback: (tweet) ->
+          @twitterClient.get('followers/ids', { screen_name: @bot().screenName }, (err, reply) ->
+            if err
+              console.log err
+            else
+              console.log reply
+              # reply.follower_ids.each
+              #   @twitterClient.post "statuses/update", { status: tweet.text, in_reply_to_user_id: id_to_str}, (err, reply) ->
+              #     if err
+              #       console.log err
+              #     else
+              #       console.log reply
+          super
