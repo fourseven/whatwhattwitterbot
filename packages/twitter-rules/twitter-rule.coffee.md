@@ -114,7 +114,6 @@ Usual actions for the bots (to be overridden by superclass)
           @stopListening() if Meteor.isServer
 
       class @TwitterPostTweetRule extends TwitterRule
-
         constructor: (doc) ->
           super
 
@@ -125,8 +124,8 @@ Usual actions for the bots (to be overridden by superclass)
             else
               console.log reply
           super
-      class @TwitterRetweetRule extends TwitterRule
 
+      class @TwitterRetweetRule extends TwitterRule
         constructor: (doc) ->
           super
 
@@ -137,8 +136,8 @@ Usual actions for the bots (to be overridden by superclass)
             else
               console.log reply
           super
-      class @TwitterTweetFollowersRule extends TwitterRule
 
+      class @TwitterTweetFollowersRule extends TwitterRule
         constructor: (doc) ->
           super
 

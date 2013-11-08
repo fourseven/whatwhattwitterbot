@@ -27,6 +27,12 @@ _.extend TwitterRules,
       when "hashtag"
         console.log "made new hashtag rule"
         new TwitterHashtagRule(doc)
+      when "retweet"
+        new TwitterRetweetRule(doc)
+        console.log "made new retweet rule"
+      when "tweet"
+        new TwitterPostTweetRule(doc)
+        console.log "made new post tweet rule"
       else
         new TwitterRule(doc)
 
