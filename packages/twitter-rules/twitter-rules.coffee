@@ -33,6 +33,9 @@ _.extend TwitterRules,
       when "tweet"
         new TwitterPostTweetRule(doc)
         console.log "made new post tweet rule"
+      when "replace"
+        new TwitterReplaceTextRule(doc)
+        console.log "made new replace text rule"
       else
         new TwitterRule(doc)
 

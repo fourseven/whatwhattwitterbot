@@ -49,6 +49,9 @@ Usual actions for the bots (to be overridden by superclass)
           console.log("logAction called")
           console.log("Reply/RT caught, but not important. It was by: " + tweet.user.screen_name)
 
+        actionCallback: (tweet) ->
+          @nextAction(tweet)
+
       class @TwitterRepeatRule extends TwitterRule
         constructor: (doc) ->
           super
@@ -142,15 +145,17 @@ Usual actions for the bots (to be overridden by superclass)
           super
 
         actionCallback: (tweet) ->
-          @twitterClient.get('followers/ids', { screen_name: @bot().screenName }, (err, reply) ->
+          @twitterClient.get 'followers/ids', { screen_name: @bot().screenName }, (err, reply) ->
             if err
               console.log err
             else
               console.log reply
-              # reply.follower_ids.each
-              #   @twitterClient.post "statuses/update", { status: tweet.text, in_reply_to_user_id: id_to_str}, (err, reply) ->
-              #     if err
-              #       console.log err
-              #     else
-              #       console.log reply
           super
+
+      # class @TwitterReplaceTextRule extends TwitterRule
+      #   constructor: (doc) ->
+      #     super
+
+      #   actionCallback: (tweet) ->
+      #     tweet.text.replace(@in_text, @out_text)
+
