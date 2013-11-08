@@ -1,0 +1,40 @@
+
+.rule {
+
+  [data-collapse] {
+    float: left;
+    margin-top: 7px;
+  }
+  & .collapse {
+    margin-top: $vertical-padding;
+    padding-top: $vertical-padding;
+    border-top: 1px solid $border-color;
+  }
+  .pure-button {
+    background-color: $color1;
+  }
+}
+
+.rule-actions {
+  @extend .pure-g-r;
+
+  .padding {
+    @extend .pure-u-1-2;
+    font-size: 70%;
+  }
+  .padding:nth-of-type(2n + 1) {
+    padding-right: 0.5em;
+  }
+  .padding:nth-of-type(2n) {
+    padding-left: 0.5em;
+  }
+}
+
+.rule-action {
+  @include base-button;
+}
+
+.rules-active {
+  @include base-padding;
+  background-color: lighten($color3, 10%);
+}

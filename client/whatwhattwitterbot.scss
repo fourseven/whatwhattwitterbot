@@ -7,6 +7,7 @@
 @import "header";
 @import "banner";
 @import "bots";
+@import "rules";
 
 * {
   box-sizing: border-box;
@@ -53,22 +54,6 @@ input[type=checkbox]:checked ~ .collapse {
   background-color: $color4;
 }
 
-.rule {
-  @include base-button;
-
-  [data-collapse] {
-    float: left;
-    margin-top: 7px;
-  }
-  & .collapse {
-    margin-top: $vertical-padding;
-    padding-top: $vertical-padding;
-    border-top: 1px solid $border-color;
-  }
-  .pure-button {
-    background-color: $color1;
-  }
-}
 .schedule {
   @include base-button;
   input[type='checkbox'] {
