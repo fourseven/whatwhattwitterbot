@@ -117,6 +117,12 @@ if Meteor.isClient
         console.dir data
         Meteor.call "updateRule", currentBotId, "repeat", data
 
+    Template.twitterRules.noRules = ->
+      TwitterRules.find().count() == 0
+
+    Template.twitterRules.activeRules = ->
+      TwitterRules.find()
+
     Template.twitterRules.events
       "dragstart [draggable]": (event) ->
         console.log "dragstart"
@@ -139,14 +145,10 @@ if Meteor.isClient
         console.log "dropped #{event.target.innerHTML}"
         event.preventDefault()
         type = event.dataTransfer.getData('text/plain')
-        console.log TwitterRules.insert
+        TwitterRules.insert
           type: type
           botId: Session.get('currentBotId')
           ownerId: Meteor.userId()
-        # if @dragSrcEl
-        #   @dragSrcEl.innerHTML = this.innerHTML
-        #   this.innerHTML = e.dataTransfer.getData('text/html')
-
 
 
 if Meteor.isServer

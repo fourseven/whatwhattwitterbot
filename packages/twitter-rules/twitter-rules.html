@@ -9,9 +9,14 @@
 </template>
 
 <template name="rulesActive">
+  {{#if noRules}}
   <div class="noRules">
     <p>You have no active rules. Drag some from above to get started</p>
   </div>
+  {{/if}}
+  {{#each activeRules}}
+    <p>RULE</p>
+  {{/each}}
 </template>
 
 <template name="twitterRules">
@@ -34,6 +39,10 @@
     <div class="rules-active">
     {{> rulesActive}}
     </div>
+
+
+
+
     <div style="display:none;">
       {{> ruleRepeat}}
       <form class="rule">
