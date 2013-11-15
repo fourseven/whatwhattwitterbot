@@ -15,8 +15,14 @@
   </div>
   {{/if}}
   {{#each activeRules}}
-    <p>RULE</p>
+    <p>{{type}}</p>
+    <p class="new_filter">Add a filter</p>
   {{/each}}
+  <select class="filter_list" style="display:none;">
+    {{#each ruleTypes}}
+      <option value={{.}}>{{.}}</option>
+    {{/each}}
+  </select>
 </template>
 
 <template name="twitterRules">
@@ -85,7 +91,7 @@
       <form class="rule">
         <input type="checkbox" id="rule-replace" data-collapse /><label for="rule-replace">Find and replace words in a tweet</label>
         <div class="collapse">Collapse
-          <p>I want to replace <input type="text" name="in_text" value="{{in_text}}" placeholder="#in_text"/> with <input type="text" name="in_text" value="{{in_text}}" placeholder="#in_text"/></p>
+          <p>I want to replace <input type="text" name="in_text" value="{{in_text}}" placeholder="#in_text"/> with <input type="text" name="in_text" value="{{in_text}}" placeholder="#out_text"/></p>
           <input type="submit" class="pure-button" value="Update" />
         </div>
       </form>

@@ -41,7 +41,7 @@ _.extend TwitterRules,
 
 TwitterRules.allow
   insert: (userId, doc) ->
-    return false  if TwitterRules.findOne({},
+    return false if TwitterRules.findOne({},
       type: doc.type
       botId: doc.botId
     )
@@ -120,8 +120,11 @@ if Meteor.isClient
     Template.twitterRules.noRules = ->
       TwitterRules.find().count() == 0
 
-    Template.twitterRules.activeRules = ->
+    Template.rulesActive.activeRules = ->
       TwitterRules.find()
+
+    Template.rulesActive.ruleTypes = ->
+      ["retweet","tweet","replace"]
 
     Template.twitterRules.events
       "dragstart [draggable]": (event) ->
@@ -150,7 +153,26 @@ if Meteor.isClient
           botId: Session.get('currentBotId')
           ownerId: Meteor.userId()
 
+    Template.rulesActive.events
+      "click .new_filter": (event) ->
+        unless $(".filter_list:visible").length
+          $(event.currentTarget).parent()
+          .find("select")
+          .first()
+          .clone()
+          .appendTo(event.currentTarget)
+          .show()
 
+      "change .filter_list": (event) ->
+        rule = $(event.currentTarget).val()
+        rule_form = $(event.currentTarget).first().parent()
+        $("#rule-#{rule}")
+        .first()
+        .parent()
+        .clone()
+        .appendTo(rule_form)
+        .show()
+        $(event.currentTarget).remove()
 if Meteor.isServer
   Meteor.publish "twitter-rules", ->
     TwitterRules.find ownerId: @userId
