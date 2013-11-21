@@ -5,7 +5,7 @@ Package.describe({
 Package.on_use(function (api, where) {
   api.use(['underscore', 'twitter-bots', 'twitter-api'], ['client', 'server']);
   api.use('coffeescript',['client','server']);
-  api.use(['templating'], 'client');
+  api.use(['templating', 'layout'], 'client');
 
   api.add_files('twitter-rule.coffee.md', ['client', 'server']);
   api.add_files('twitter-rules.coffee', ['client', 'server']);

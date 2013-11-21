@@ -17,10 +17,14 @@ Sets up the twitter client against the bot
 
 `sourceName` is a twitter user's name (the source to listen to), and `resolveCallback` gets called with the result from twitter
 
-        resolveTwitterUid: (sourceName, resolveCallback) ->
+        resolveTwitterUid: (sourceName, resolveCallback = ->) ->
           console.log "Resolving Twitter ID " + sourceName
           if sourceName
-            Meteor.call "resolveTwitterUid", sourceName, @botId, resolveCallback
+            Meteor.call "resolveTwitterUid", sourceName, @botId, (err, result) =>
+              uid = result.id_str
+              console.log ("The document id was #{@_id}")
+              TwitterRules.update({_id: @_id}, {$set: {repeatSourceId: uid}})
+              resolveCallback(uid)
 
 Usual actions for the bots (to be overridden by superclass)
 
@@ -52,6 +56,9 @@ Usual actions for the bots (to be overridden by superclass)
         actionCallback: (tweet) ->
           @nextAction(tweet)
 
+        isValid: () ->
+          false
+
       class @TwitterRepeatRule extends TwitterRule
         constructor: (doc) ->
           super
@@ -82,13 +89,20 @@ Usual actions for the bots (to be overridden by superclass)
         start: ->
           if Meteor.isServer && super
             unless @repeatSourceId
-              @resolveTwitterUid(@sourceName, @resolveCallback)
+              console.log("TwitterRepeatRule starting but calling resolveTwitterUid first/instead")
+              @resolveTwitterUid(@repeatSource, @resolveCallback)
             else
               @startListening()
 
         stop: ->
           super
           @stopListening()
+
+        isValid: () ->
+          valid = @repeatSource && @repeatSourceId
+          console.log("RepeatRule is valid? #{@repeatSource} #{@repeatSourceId}")
+          return valid
+
 
       class @TwitterHashtagRule extends TwitterRule
         constructor: (doc) ->

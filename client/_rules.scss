@@ -37,4 +37,5 @@
 .rules-active {
   @include base-padding;
   background-color: lighten($color3, 10%);
+  min-height: 150px;
 }

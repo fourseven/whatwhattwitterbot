@@ -7,17 +7,20 @@ _.extend TwitterRules,
     repeatRules = TwitterRules.find(type: "repeat")
     handle = repeatRules.observeChanges
       added: (id, fields) ->
+        console.log "repeat rule added"
         rule = TwitterRules.findOne(_id: id)
-        rule.start() if (rule.active && rule.repeatSourceId)
+        rule.start() if (rule.isValid())
 
       changed: (id, fields) ->
+        console.log "A repeat rule was changed!"
         rule = TwitterRules.findOne(_id: id)
-        if _.has(fields, "active")
-          (if (fields.active and rule.repeatSourceId) then rule.start() else rule.stop())
+        # if _.has(fields, "active")
+        #   (if (fields.active and rule.repeatSourceId) then rule.start() else rule.stop())
         if _.has(fields, "repeatSource")
-          rule.resolveTwitterUid()
+          console.log "repeatSource was changed, calling resolveTwitterUid"
+          rule.resolveTwitterUid rule.repeatSource
         if _.has(fields, "repeatSourceId")
-          (if (rule.active) then rule.start() else rule.stop())
+          (if (rule.isValid()) then rule.start() else rule.stop())
 
   factory: (doc) ->
     switch doc.type
@@ -28,24 +31,28 @@ _.extend TwitterRules,
         console.log "made new hashtag rule"
         new TwitterHashtagRule(doc)
       when "retweet"
-        new TwitterRetweetRule(doc)
         console.log "made new retweet rule"
+        new TwitterRetweetRule(doc)
       when "tweet"
-        new TwitterPostTweetRule(doc)
         console.log "made new post tweet rule"
+        new TwitterPostTweetRule(doc)
       when "replace"
-        new TwitterReplaceTextRule(doc)
         console.log "made new replace text rule"
+        new TwitterReplaceTextRule(doc)
       else
         new TwitterRule(doc)
 
 TwitterRules.allow
   insert: (userId, doc) ->
-    return false if TwitterRules.findOne({},
+    console.log "user: #{userId}, doc: #{JSON.stringify(doc)}"
+    return false if TwitterRules.findOne(
       type: doc.type
       botId: doc.botId
     )
-    userId and doc.ownerId is userId
+
+    allowed = (userId && doc.ownerId == userId)
+    console.log "allowed was #{!!allowed}"
+    return allowed
 
   update: (userId, doc, fields, modifier) ->
 
@@ -69,6 +76,10 @@ if Meteor.isClient
       callback resultsArray
 
   , 1000)
+
+  Layout.helper "ruleHelper", (options) ->
+    layout: "rule_#{options.layout}"
+
   Meteor.startup ->
     setRuleToSession = (type) ->
       rules = Session.get("rules") or {}
@@ -88,25 +99,19 @@ if Meteor.isClient
       return ""  unless bot
       "@" + bot.screenName
 
-    _.extend Template.ruleRepeat,
+    _.extend Template.rule_repeat,
       created: ->
         setRuleToSession "repeat"
       repeatSource: ->
         rule = getRuleFromSession("repeat")
         (if rule then rule.repeatSource else "")
 
-    Template.ruleRepeat.helpers
+    Template.rule_repeat.helpers
       checkedHelper: (objectName) ->
         rule = getRuleFromSession("repeat")
         (if (rule and rule[objectName]) then "checked='checked'" else `undefined`)
 
-    Template.ruleRepeat.events
-      "click [data-collapse]": (event) ->
-        value = !!$(event.target).attr("checked")
-        currentBotId = Session.get("currentBotId")
-        Meteor.call "updateRule", currentBotId, "repeat",
-          active: value
-
+    Template.rule_repeat.events
       submit: (event) ->
         event.preventDefault()
         currentBotId = Session.get("currentBotId")
@@ -114,7 +119,7 @@ if Meteor.isClient
         data = {}
         temp.map (x) ->
           data[x.name] = x.value
-        console.dir data
+        console.log "data from submit of update rule was #{JSON.stringify(data)}"
         Meteor.call "updateRule", currentBotId, "repeat", data
 
     Template.twitterRules.noRules = ->
@@ -182,7 +187,7 @@ if Meteor.isServer
     # var Future = Npm.require('fibers/future');
     Meteor.methods
       updateRule: (currentBotId, type, values) ->
-        console.log "running update for " + type + " with values: " + console.log(values)
+        console.log "running update for " + type + " with values: " + JSON.stringify(values)
         TwitterRules.upsert
           ownerId: Meteor.userId()
           botId: currentBotId
@@ -191,5 +196,5 @@ if Meteor.isServer
           $set: values
 
       clearRules: ->
-        TwitterRules.remove {}
+        TwitterRules.remove({})
 
