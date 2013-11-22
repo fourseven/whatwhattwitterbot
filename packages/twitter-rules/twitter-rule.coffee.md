@@ -36,9 +36,11 @@ Usual actions for the bots (to be overridden by superclass)
 
         startListening: ->
           console.log "Start listening"
+          Meteor.isServer
 
         stopListening: ->
           console.log "Stop listening"
+          Meteor.isServer
 
         bot: ->
           TwitterBots.findOne(_id: @botId)
@@ -46,8 +48,9 @@ Usual actions for the bots (to be overridden by superclass)
         nextAction: (tweet) ->
           console.log("nextAction called")
           console.log(tweet)
-          nextRule = TwitterRules.findOne { _id: @nextActionId }
-          nextRule.actionCallback(tweet) if nextRule
+          if @nextActionId
+            nextRule = TwitterRules.findOne { _id: @nextActionId }
+            nextRule.actionCallback(tweet) if nextRule
 
         logAction: (tweet) ->
           console.log("logAction called")
@@ -74,7 +77,11 @@ Usual actions for the bots (to be overridden by superclass)
           @stream ||= @twitterClient.stream("statuses/filter", {follow: @repeatSourceId})
 
         tweetCallback: (tweet) =>
-          if (!tweet.in_reply_to_status_id || @repeatMentions) && tweet.user.id == @repeatSourceId
+          console.log("Tweet userId was #{tweet.user.id_str}")
+          console.log("Saved userId was #{@repeatSourceId}")
+          console.log("tweet.in_reply_to_status_id was #{tweet.in_reply_to_status_id}")
+
+          if (!tweet.in_reply_to_status_id || @repeatMentions) && tweet.user.id_str == @repeatSourceId
             @nextAction(tweet)
           else
             @logAction(tweet)
@@ -84,7 +91,7 @@ Usual actions for the bots (to be overridden by superclass)
 
         stopListening: ->
           super
-          @createStream().stop()
+          @createStream().stop() if @createStream().request
 
         start: ->
           if Meteor.isServer && super

@@ -18,6 +18,7 @@ _.extend TwitterRules,
         #   (if (fields.active and rule.repeatSourceId) then rule.start() else rule.stop())
         if _.has(fields, "repeatSource")
           console.log "repeatSource was changed, calling resolveTwitterUid"
+          rule.stop()
           rule.resolveTwitterUid rule.repeatSource
         if _.has(fields, "repeatSourceId")
           (if (rule.isValid()) then rule.start() else rule.stop())
