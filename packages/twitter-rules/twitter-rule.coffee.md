@@ -1,6 +1,5 @@
 The base twitter rule class.
 
-      Future = Npm.require("fibers/future")
       class @TwitterRule
         constructor: (doc) ->
           _.extend this, doc
