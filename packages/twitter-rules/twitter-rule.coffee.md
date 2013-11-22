@@ -157,11 +157,12 @@ Usual actions for the bots (to be overridden by superclass)
 
         actionCallback: (tweet) ->
           console.log("TwitterPostTweetRule actionCallback called")
-          @twitterClient.post "statuses/update", {status: tweet.text}, (err, reply) ->
-            if err
-              console.log err
-            else
-              console.log reply
+          unless (tweet.user.id_str == @bot().id)
+            @twitterClient.post "statuses/update", {status: tweet.text}, (err, reply) ->
+              if err
+                console.log err
+              else
+                console.log reply
           super
 
       class @TwitterRetweetRule extends TwitterRule
@@ -170,11 +171,12 @@ Usual actions for the bots (to be overridden by superclass)
 
         actionCallback: (tweet) ->
           console.log("TwitterRetweetRule actionCallback called")
-          @twitterClient.post "statuses/retweet/:id", { id: tweet.id_str }, (err, reply) ->
-            if err
-              console.log err
-            else
-              console.log reply
+          unless (tweet.user.id_str == @bot().id)
+            @twitterClient.post "statuses/retweet/:id", { id: tweet.id_str }, (err, reply) ->
+              if err
+                console.log err
+              else
+                console.log reply
           super
 
       class @TwitterTweetFollowersRule extends TwitterRule
