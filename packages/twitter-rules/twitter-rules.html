@@ -1,12 +1,12 @@
 <template name="rulesActive">
   {{#if noRules}}
   <div class="noRules">
-    <p>You have no active rules. Drag some from above to get started</p>
+    <p>You have no active events. Drag some from above to get started</p>
   </div>
   {{/if}}
-  {{#each activeRules}}
+  {{#each activeEvents}}
     <p>{{#ruleHelper layout=type}}{{/ruleHelper}}</p>
-    <p class="new_filter">Add a filter</p>
+    <p class="new_filter">And do nothing <br />(drag another rule here to change this)</p>
   {{/each}}
   <select class="filter_list" style="display:none;">
     {{#each ruleTypes}}
@@ -18,16 +18,29 @@
 <template name="twitterRules">
   <div class="content">
     <h1>Your rules for {{botName}}</h1>
-    <h2>All start actions</h2>
-    <div class="rule-actions">
+    <h2>All events</h2>
+    <div class="rule-events">
       <div class="padding">
-        <div class="rule-action" draggable="true" data-rule-type="hashtag">
+        <div class="rule-event" draggable="true" data-rule-type="hashtag">
           <p>Follow a hashtag</p>
         </div>
       </div>
       <div class="padding">
-        <div class="rule-action" draggable="true" data-rule-type="repeat">
+        <div class="rule-event" draggable="true" data-rule-type="repeat">
             <p>Follow a user</p>
+        </div>
+      </div>
+    </div>
+    <h2>All actions</h2>
+    <div class="rule-actions">
+      <div class="padding">
+        <div class="rule-action" draggable="true" data-rule-type="retweet">
+          <p>Retweet the tweet</p>
+        </div>
+      </div>
+      <div class="padding">
+        <div class="rule-action" draggable="true" data-rule-type="tweet">
+          <p>Tweet the content from current user</p>
         </div>
       </div>
     </div>
@@ -51,6 +64,7 @@
         <input type="checkbox" id="rule-respond" data-collapse /><label for="rule-respond">Automatically respond to interactions with bot</label>
         <div class="collapse">Collapse
           <input type="submit" class="pure-button" value="Update" />
+          <span class="remove">Remove</span>
         </div>
 
       </form>
@@ -58,6 +72,7 @@
         <input type="checkbox" id="rule-keywords" data-collapse /><label for="rule-keywords">Automatically respond to keywords</label>
         <div class="collapse">Collapse
           <input type="submit" class="pure-button" value="Update" />
+          <span class="remove">Remove</span>
         </div>
 
       </form>
@@ -85,8 +100,9 @@
 
 <template name="rule_hashtag">
   <form class="rule">
-      <p>I want to retweet <input type="text" name="hashtag" value="{{hashtag}}" placeholder="#hashtag"/></p>
+      <p>I want to listen to <input type="text" name="hashtag" value="{{hashtag}}" placeholder="#hashtag"/></p>
       <input type="submit" class="pure-button" value="Update" />
+      <button class="remove" class="pure-button">Remove</button>
   </form>
 </template>
 
@@ -95,5 +111,6 @@
     <p>I want to copy @<input type="text" name="repeatSource" value="{{repeatSource}}" /></p>
     <p> and include <label for="repeatMentions"><input type="checkbox" name="repeatMentions" id="repeatMentions" {{checkedHelper 'repeatMentions'}} />mentions</label></p>
     <input type="submit" class="pure-button" value="Update" />
+    <button class="remove" class="pure-button">Remove</button>
   </form>
 </template>

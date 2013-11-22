@@ -1,5 +1,6 @@
 The base twitter rule class.
 
+      Future = Npm.require("fibers/future")
       class @TwitterRule
         constructor: (doc) ->
           _.extend this, doc
@@ -43,14 +44,18 @@ Usual actions for the bots (to be overridden by superclass)
           Meteor.isServer
 
         bot: ->
-          TwitterBots.findOne(_id: @botId)
+          TwitterBots.findOne({_id: @botId})
+
+        nextRule: ->
+          return unless @nextActionId
+          TwitterRules.findOne({ _id: @nextActionId })
 
         nextAction: (tweet) ->
           console.log("nextAction called")
-          console.log(tweet)
-          if @nextActionId
-            nextRule = TwitterRules.findOne { _id: @nextActionId }
-            nextRule.actionCallback(tweet) if nextRule
+          nextRule = @nextRule()
+          if nextRule
+            console.log("nextRule found within nextAction")
+            nextRule.actionCallback(tweet)
 
         logAction: (tweet) ->
           console.log("logAction called")
@@ -87,7 +92,10 @@ Usual actions for the bots (to be overridden by superclass)
             @logAction(tweet)
 
         startListening: ->
-          @createStream().on "tweet", @tweetCallback if super
+          @createStream().on "tweet", Meteor.bindEnvironment (tweet) =>
+            @tweetCallback(tweet) if super
+          , (e) ->
+            console.log(e)
 
         stopListening: ->
           super
@@ -123,7 +131,10 @@ Usual actions for the bots (to be overridden by superclass)
 
         startListening: ->
           super
-          @createStream().on "tweet", @tweetCallback
+          @createStream().on "tweet", Meteor.bindEnvironment (tweet) =>
+            @tweetCallback(tweet) if super
+          , (e) ->
+            console.log(e)
 
         stopListening: ->
           super
@@ -146,6 +157,7 @@ Usual actions for the bots (to be overridden by superclass)
           super
 
         actionCallback: (tweet) ->
+          console.log("TwitterPostTweetRule actionCallback called")
           @twitterClient.post "statuses/update", {status: tweet.text}, (err, reply) ->
             if err
               console.log err
@@ -158,6 +170,7 @@ Usual actions for the bots (to be overridden by superclass)
           super
 
         actionCallback: (tweet) ->
+          console.log("TwitterRetweetRule actionCallback called")
           @twitterClient.post "statuses/retweet/:id", { id: tweet.id_str }, (err, reply) ->
             if err
               console.log err

@@ -136,16 +136,22 @@ if Meteor.isClient
     Template.rule_repeat.events
       submit: (event) =>
         _submitHelper(event, "repeat")
+      "click .remove": (event) ->
+        event.preventDefault()
+        TwitterRules.remove({_id: @_id})
 
     Template.rule_hashtag.events
       submit: (event) =>
         _submitHelper(event, "hashtag")
+      "click .remove": (event) ->
+        event.preventDefault()
+        TwitterRules.remove({_id: @_id})
 
     Template.twitterRules.noRules = ->
       TwitterRules.find().count() == 0
 
-    Template.rulesActive.activeRules = ->
-      TwitterRules.find()
+    Template.rulesActive.activeEvents = ->
+      TwitterRules.find({type: {$in: ["hashtag", "repeat"]}})
 
     Template.rulesActive.ruleTypes = ->
       ["retweet","tweet","replace"]
@@ -167,7 +173,19 @@ if Meteor.isClient
         console.log "dragover"
         event.preventDefault()
 
-      "drop": (event) ->
+      "drop .new_filter": (event) ->
+        event.stopPropagation()
+        event.preventDefault()
+        type = event.dataTransfer.getData('text/plain')
+        newId = TwitterRules.insert
+          type: type
+          botId: Session.get('currentBotId')
+          ownerId: Meteor.userId()
+        if newId
+          TwitterRules.update({_id: @_id}, {$set: {nextActionId: newId}})
+        console.log("New filter")
+
+      "drop .rules-active": (event) ->
         event.dataTransfer.dropEffect = "copy"
         console.log "dropped #{event.target.innerHTML}"
         event.preventDefault()

@@ -15,7 +15,7 @@
   }
 }
 
-.rule-actions {
+.rule-events, .rule-actions {
   @extend .pure-g-r;
 
   .padding {
@@ -30,7 +30,7 @@
   }
 }
 
-.rule-action {
+.rule-event, .rule-action {
   @include base-button;
 }
 
@@ -38,4 +38,9 @@
   @include base-padding;
   background-color: lighten($color3, 10%);
   min-height: 150px;
+}
+
+.new_filter {
+  @include base-padding;
+  background-color: lighten($color3, 17%);
 }
