@@ -5,14 +5,8 @@
   </div>
   {{/if}}
   {{#each activeEvents}}
-    <p>{{#ruleHelper layout=type}}{{/ruleHelper}}</p>
-    <p class="new_filter">And do nothing <br />(drag another rule here to change this)</p>
+    <p>{{#eventHelper layout=type}}{{/eventHelper}}</p>
   {{/each}}
-  <select class="filter_list" style="display:none;">
-    {{#each ruleTypes}}
-      <option value={{.}}>{{.}}</option>
-    {{/each}}
-  </select>
 </template>
 
 <template name="twitterRules">
@@ -28,6 +22,16 @@
       <div class="padding">
         <div class="rule-event" draggable="true" data-rule-type="repeat">
             <p>Follow a user</p>
+        </div>
+      </div>
+      <div class="padding">
+        <div class="rule-event" data-rule-type="repeat">
+            <p>A user followed this account</p>
+        </div>
+      </div>
+      <div class="padding">
+        <div class="rule-event" data-rule-type="repeat">
+            <p>A user favourited your tweet</p>
         </div>
       </div>
     </div>
@@ -104,6 +108,11 @@
       <input type="submit" class="pure-button" value="Update" />
       <button class="remove" class="pure-button">Remove</button>
   </form>
+    {{#if noActions}}
+    <p class="new_filter">And do nothing <br />(drag another rule here to change this)</p>
+    {{else}}
+      {{#actionHelper layout="testing"}}{{/actionHelper}}
+    {{/if}}
 </template>
 
 <template name="rule_repeat">
@@ -113,4 +122,13 @@
     <input type="submit" class="pure-button" value="Update" />
     <button class="remove" class="pure-button">Remove</button>
   </form>
+    {{#if noActions}}
+    <p class="new_filter">And do nothing <br />(drag another rule here to change this)</p>
+    {{else}}
+      {{#actionHelper layout="testing"}}{{/actionHelper}}
+    {{/if}}
+</template>
+
+<template name="action_testing">
+Hello
 </template>

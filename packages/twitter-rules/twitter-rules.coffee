@@ -88,8 +88,11 @@ if Meteor.isClient
 
   , 1000)
 
-  Layout.helper "ruleHelper", (options) ->
+  Layout.helper "eventHelper", (options) ->
     layout: "rule_#{options.layout}"
+
+  Layout.helper "actionHelper", (options) ->
+    layout: "action_#{options.layout}"
 
   Meteor.startup ->
     setRuleToSession = (type) ->
@@ -121,6 +124,13 @@ if Meteor.isClient
       checkedHelper: (objectName) ->
         rule = getRuleFromSession("repeat")
         (if (rule and rule[objectName]) then "checked='checked'" else `undefined`)
+
+      noActions: () ->
+        false
+
+    Template.rule_hashtag.helpers
+      noActions: () ->
+        false
 
     _submitHelper = (event, type) ->
       event.preventDefault()
