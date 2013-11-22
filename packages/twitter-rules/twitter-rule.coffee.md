@@ -137,6 +137,10 @@ Usual actions for the bots (to be overridden by superclass)
           super
           @stopListening() if Meteor.isServer
 
+        isValid: ->
+          console.log("TwitterHashtagRule is valid? #{@hashtag}")
+          @hashtag
+
       class @TwitterPostTweetRule extends TwitterRule
         constructor: (doc) ->
           super

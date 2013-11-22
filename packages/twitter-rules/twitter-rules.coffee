@@ -4,24 +4,34 @@ TwitterRules = new Meteor.Collection "twitter-rules",
 
 _.extend TwitterRules,
   start: ->
+    allRules = TwitterRules.find()
     repeatRules = TwitterRules.find(type: "repeat")
-    handle = repeatRules.observeChanges
+    hashtagRules = TwitterRules.find(type: "hashtag")
+
+    allRules.observeChanges
       added: (id, fields) ->
-        console.log "repeat rule added"
+        console.log "rule added"
         rule = TwitterRules.findOne(_id: id)
         rule.start() if (rule.isValid())
 
+    handle = repeatRules.observeChanges
       changed: (id, fields) ->
         console.log "A repeat rule was changed!"
         rule = TwitterRules.findOne(_id: id)
-        # if _.has(fields, "active")
-        #   (if (fields.active and rule.repeatSourceId) then rule.start() else rule.stop())
         if _.has(fields, "repeatSource")
           console.log "repeatSource was changed, calling resolveTwitterUid"
           rule.stop()
           rule.resolveTwitterUid rule.repeatSource
         if _.has(fields, "repeatSourceId")
           (if (rule.isValid()) then rule.start() else rule.stop())
+
+    hashtagRules.observeChanges
+      changed: (id, fields) ->
+        console.log "A hashtag rule was changed!"
+        rule = TwitterRules.findOne(_id: id)
+        if _.has(fields, "hashtag")
+          (if (rule.isValid()) then rule.start() else rule.stop())
+
 
   factory: (doc) ->
     switch doc.type
@@ -112,16 +122,24 @@ if Meteor.isClient
         rule = getRuleFromSession("repeat")
         (if (rule and rule[objectName]) then "checked='checked'" else `undefined`)
 
+    _submitHelper = (event, type) ->
+      event.preventDefault()
+      currentBotId = Session.get("currentBotId")
+      temp = $(event.target).serializeArray()
+      data = {}
+      temp.map (x) ->
+        data[x.name] = x.value
+      console.log "data from submit of update rule was #{JSON.stringify(data)}"
+      Meteor.call "updateRule", currentBotId, type, data
+
+
     Template.rule_repeat.events
-      submit: (event) ->
-        event.preventDefault()
-        currentBotId = Session.get("currentBotId")
-        temp = $(event.target).serializeArray()
-        data = {}
-        temp.map (x) ->
-          data[x.name] = x.value
-        console.log "data from submit of update rule was #{JSON.stringify(data)}"
-        Meteor.call "updateRule", currentBotId, "repeat", data
+      submit: (event) =>
+        _submitHelper(event, "repeat")
+
+    Template.rule_hashtag.events
+      submit: (event) =>
+        _submitHelper(event, "hashtag")
 
     Template.twitterRules.noRules = ->
       TwitterRules.find().count() == 0
@@ -192,7 +210,7 @@ if Meteor.isServer
         TwitterRules.upsert
           ownerId: Meteor.userId()
           botId: currentBotId
-          type: "repeat"
+          type: type
         ,
           $set: values
 
