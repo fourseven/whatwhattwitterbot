@@ -92,8 +92,8 @@ if Meteor.isClient
   Layout.helper "eventHelper", (options) ->
     layout: "rule_#{options.layout}"
 
-  Layout.helper "actionHelper", (options) ->
-    layout: "action_#{options.layout}"
+  Layout.helper "actionHelper", (layout) ->
+    layout: "action_#{layout}"
 
   Meteor.startup ->
     setRuleToSession = (type) ->
@@ -127,11 +127,11 @@ if Meteor.isClient
         (if (rule and rule[objectName]) then "checked='checked'" else `undefined`)
 
       noActions: () ->
-        false
+        true
 
     Template.rule_hashtag.helpers
       noActions: () ->
-        false
+        true
 
     _submitHelper = (event, type) ->
       event.preventDefault()
