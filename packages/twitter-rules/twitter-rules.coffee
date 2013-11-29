@@ -5,10 +5,11 @@ TwitterRules = new Meteor.Collection "twitter-rules",
 _.extend TwitterRules,
   start: ->
     allRules = TwitterRules.find()
+    startRules = TwitterRules.find({type: {$in: ["hashtag", "repeat"]}})
     repeatRules = TwitterRules.find(type: "repeat")
     hashtagRules = TwitterRules.find(type: "hashtag")
 
-    allRules.observeChanges
+    startRules.observeChanges
       added: (id, fields) ->
         console.log "rule added"
         rule = TwitterRules.findOne(_id: id)

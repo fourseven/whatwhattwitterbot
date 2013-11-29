@@ -21,7 +21,7 @@ if (Meteor.isClient) {
     },
     'click .banner .sign-in': function (event) {
       event.preventDefault();
-      Accounts._loginButtonsSession.set('dropdownVisible', true);                                                                // 8
+      Accounts._loginButtonsSession.set('dropdownVisible', true);
       setTimeout(function () {
         $("#login-email").focus();
       }, 0);
