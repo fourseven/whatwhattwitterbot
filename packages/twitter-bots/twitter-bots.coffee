@@ -4,7 +4,8 @@
   owner: ->
     Meteor.users.findOne _id: @ownerId
   rules: ->
-    []
+    rules = TwitterRules.find({botId: @_id})
+    rules.fetch()
   schedules: ->
     []
   getAuth: ->
