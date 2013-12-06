@@ -63,7 +63,7 @@ Usual actions for the bots (to be overridden by superclass)
         actionCallback: (tweet) ->
           @nextAction(tweet)
 
-        isValid: () ->
+        isValid: () =>
           false
 
       class @TwitterRepeatRule extends TwitterRule
@@ -116,7 +116,7 @@ This function is throttled, so that we don't get banned by twitter
           super
           @stopListening()
 
-        isValid: () ->
+        isValid: () =>
           valid = !!@repeatSource && @repeatSourceId
           console.log("RepeatRule is valid? #{valid}")
           return valid
@@ -154,9 +154,10 @@ This function is throttled, so that we don't get banned by twitter
           super
           @stopListening() if Meteor.isServer
 
-        isValid: ->
+        isValid: =>
           valid = !!(@hashtag && @hashtag.length > 3)
           console.log("TwitterHashtagRule is valid? #{valid}")
+          valid
 
       class @TwitterPostTweetRule extends TwitterRule
         constructor: (doc) ->

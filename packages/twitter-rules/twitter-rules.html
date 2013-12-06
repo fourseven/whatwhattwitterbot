@@ -17,9 +17,11 @@
     <h2>Active rules</h2>
     {{#unless noRules}}
       <div class="rules-active">
-        {{#each activeEvents}}
-          <p>{{#eventHelper layout=type}}{{/eventHelper}}</p>
-        {{/each}}
+        <ul>
+          {{#each activeEvents}}
+            <li>{{#eventHelper layout=type}}{{/eventHelper}}</li>
+          {{/each}}
+        </ul>
       </div>
     {{/unless}}
     <div class="noRules">
