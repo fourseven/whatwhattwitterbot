@@ -34,6 +34,11 @@
   @include base-button;
 }
 
+.noRules {
+  @include base-padding;
+  background-color: lighten($color3, 17%);
+}
+
 .rules-active {
   @include base-padding;
   background-color: lighten($color3, 10%);
