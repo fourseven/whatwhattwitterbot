@@ -87,6 +87,9 @@
     <input type="submit" class="pure-button" value="Update" />
     <button class="remove" class="pure-button">Remove</button>
   </form>
+    {{#if noActions}}
+    <p class="new_filter">And do nothing <br />(drag another rule here to change this)</p>
+    {{/if}}
 </template>
 
 <template name="rule_replace_text">
