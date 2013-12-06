@@ -55,6 +55,8 @@ Usual actions for the bots (to be overridden by superclass)
           if nextRule
             console.log("nextRule found within nextAction")
             nextRule.actionCallback(tweet)
+          else
+            @logAction(tweet)
 
         logAction: (tweet) ->
           console.log("logAction called")
