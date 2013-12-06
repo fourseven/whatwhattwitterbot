@@ -49,7 +49,7 @@ Usual actions for the bots (to be overridden by superclass)
           return unless @nextActionId
           TwitterRules.findOne({ _id: @nextActionId })
 
-        nextAction: (tweet) ->
+        nextAction: (tweet) =>
           console.log("nextAction called")
           nextRule = @nextRule()
           if nextRule
@@ -90,11 +90,15 @@ Usual actions for the bots (to be overridden by superclass)
           else
             @logAction(tweet)
 
+This function is throttled, so that we don't get banned by twitter
+
         startListening: ->
-          @createStream().on "tweet", Meteor.bindEnvironment (tweet) =>
+          eventHandler = _.throttle(Meteor.bindEnvironment((tweet) =>
             @tweetCallback(tweet) if super
           , (e) ->
             console.log(e)
+          ), 30000)
+          @createStream().on "tweet", eventHandler
 
         stopListening: ->
           super
@@ -113,8 +117,8 @@ Usual actions for the bots (to be overridden by superclass)
           @stopListening()
 
         isValid: () ->
-          valid = @repeatSource && @repeatSourceId
-          console.log("RepeatRule is valid? #{@repeatSource} #{@repeatSourceId}")
+          valid = !!@repeatSource && @repeatSourceId
+          console.log("RepeatRule is valid? #{valid}")
           return valid
 
 
@@ -128,12 +132,15 @@ Usual actions for the bots (to be overridden by superclass)
         tweetCallback: (tweet) =>
           @nextAction(tweet)
 
+This function is throttled, so that we don't get banned by twitter
+
         startListening: ->
-          super
-          @createStream().on "tweet", Meteor.bindEnvironment (tweet) =>
+          eventHandler = _.throttle(Meteor.bindEnvironment((tweet) =>
             @tweetCallback(tweet) if super
           , (e) ->
             console.log(e)
+          ), 30000)
+          @createStream().on "tweet", eventHandler
 
         stopListening: ->
           super
@@ -148,8 +155,8 @@ Usual actions for the bots (to be overridden by superclass)
           @stopListening() if Meteor.isServer
 
         isValid: ->
-          console.log("TwitterHashtagRule is valid? #{@hashtag}")
-          @hashtag
+          valid = !!(@hashtag && @hashtag.length > 3)
+          console.log("TwitterHashtagRule is valid? #{valid}")
 
       class @TwitterPostTweetRule extends TwitterRule
         constructor: (doc) ->
