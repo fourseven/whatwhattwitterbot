@@ -211,7 +211,7 @@ This function is throttled, so that we don't get banned by twitter
           super
 
         actionCallback: (tweet) ->
-          sub(tweet)
+          @sub(tweet)
 
         sub: (tweet) ->
           tweet.text.replace(@in_text, @out_text)
