@@ -206,10 +206,12 @@ This function is throttled, so that we don't get banned by twitter
               console.log reply
           super
 
-      # class @TwitterReplaceTextRule extends TwitterRule
-      #   constructor: (doc) ->
-      #     super
+      class @TwitterReplaceTextRule extends TwitterRule
+        constructor: (doc) ->
+          super
 
-      #   actionCallback: (tweet) ->
-      #     tweet.text.replace(@in_text, @out_text)
+        actionCallback: (tweet) ->
+          sub(tweet)
 
+        sub: (tweet) ->
+          tweet.text.replace(@in_text, @out_text)

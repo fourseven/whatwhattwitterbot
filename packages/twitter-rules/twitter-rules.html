@@ -58,6 +58,12 @@
         <p>Tweet the content from current user</p>
       </div>
     </div>
+
+    <div class="padding">
+      <div class="rule-action" draggable="true" data-rule-type="replace_text">
+        <p>Substitute words in the tweet with you own.</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -81,6 +87,19 @@
     <input type="submit" class="pure-button" value="Update" />
     <button class="remove" class="pure-button">Remove</button>
   </form>
+</template>
+
+<template name="rule_replace_text">
+  <form class="rule">
+    <input type="checkbox" id="rule-replace" data-collapse /><label for="rule-replace">Find and replace words in a tweet</label>
+    <div class="collapse">Collapse
+      <p>I want to replace <input type="text" name="in_text" value="{{in_text}}" placeholder="#in_text"/> with <input type="text" name="out_text" value="{{out_text}}" placeholder="#out_text"/></p>
+      <input type="submit" class="pure-button" value="Update" />
+    </div>
+  </form>
+  {{#if noActions}}
+    <p class="new_filter">And do nothing <br />(drag another rule here to change this)</p>
+    {{/if}}
 </template>
 
 <template name="rule_retweet">

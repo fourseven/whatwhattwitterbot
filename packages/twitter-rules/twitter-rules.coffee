@@ -48,7 +48,7 @@ _.extend TwitterRules,
       when "tweet"
         console.log "made new post tweet rule"
         new TwitterPostTweetRule(doc)
-      when "replace"
+      when "replace_text"
         console.log "made new replace text rule"
         new TwitterReplaceTextRule(doc)
       else
@@ -150,6 +150,13 @@ if Meteor.isClient
     Template.rule_repeat.events
       submit: (event) =>
         _submitHelper(event, "repeat")
+      "click .remove": (event) ->
+        event.preventDefault()
+        TwitterRules.remove({_id: @_id})
+
+    Template.rule_replace_text.events
+      submit: (event) =>
+        _submitHelper(event, "replace_text")
       "click .remove": (event) ->
         event.preventDefault()
         TwitterRules.remove({_id: @_id})
