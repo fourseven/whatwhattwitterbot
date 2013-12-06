@@ -58,6 +58,11 @@ Usual actions for the bots (to be overridden by superclass)
           else
             @logAction(tweet)
 
+        nextActionRender: () ->
+          nextRule = @nextRule()
+          if nextRule
+            return Template["rule_#{nextRule.type}"](nextRule)
+
         logAction: (tweet) ->
           console.log("logAction called")
           console.log("Reply/RT caught, but not important. It was by: " + tweet.user.screen_name)
@@ -159,7 +164,7 @@ This function is throttled, so that we don't get banned by twitter
         isValid: =>
           valid = !!(@hashtag && @hashtag.length > 3)
           console.log("TwitterHashtagRule is valid? #{valid}")
-          valid
+          return valid
 
       class @TwitterPostTweetRule extends TwitterRule
         constructor: (doc) ->

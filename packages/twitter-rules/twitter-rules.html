@@ -1,12 +1,5 @@
 <template name="rulesActive">
-  {{#if noRules}}
-  <div class="noRules">
-    <p>You have no active events. Drag some from above to get started</p>
-  </div>
-  {{/if}}
-  {{#each activeEvents}}
-    <p>{{#eventHelper layout=type}}{{/eventHelper}}</p>
-  {{/each}}
+  OLD TEMPLATE
 </template>
 
 <template name="twitterRules">
@@ -19,7 +12,7 @@
       <div class="rules-active">
         <ul>
           {{#each activeEvents}}
-            <li>{{#eventHelper layout=type}}{{/eventHelper}}</li>
+            <li>{{{templateHelper .}}}</li>
           {{/each}}
         </ul>
       </div>
@@ -74,13 +67,11 @@
 
 <template name="rule_hashtag">
   <form class="rule">
-      <p>I want to listen to <input type="text" name="hashtag" value="{{hashtag}}" placeholder="#hashtag"/></p>
-      <input type="submit" class="pure-button" value="Update" />
-      <button class="remove" class="pure-button">Remove</button>
+    <p>I want to listen to <input type="text" name="hashtag" value="{{hashtag}}" placeholder="#hashtag"/></p>
+    <input type="submit" class="pure-button" value="Update" />
+    <button class="remove" class="pure-button">Remove</button>
   </form>
-    {{#if noActions}}
-    <p class="new_filter">And do nothing <br />(drag another rule here to change this)</p>
-    {{/if}}
+  {{{nextActionRender}}}
 </template>
 
 <template name="rule_repeat">
@@ -90,11 +81,8 @@
     <input type="submit" class="pure-button" value="Update" />
     <button class="remove" class="pure-button">Remove</button>
   </form>
-    {{#if noActions}}
-    <p class="new_filter">And do nothing <br />(drag another rule here to change this)</p>
-    {{/if}}
 </template>
 
-<template name="action_testing">
+<template name="rule_retweet">
 Hello
 </template>

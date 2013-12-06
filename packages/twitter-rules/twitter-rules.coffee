@@ -113,6 +113,9 @@ if Meteor.isClient
       bot = TwitterBots.findOne(_id: Session.get("currentBotId"))
       return ""  unless bot
       "@" + bot.screenName
+    Template.twitterRules.templateHelper = (_with) ->
+      debugger unless _.isEmpty(_with.hash)
+      return Template["rule_#{@type}"](this);
 
     _.extend Template.rule_repeat,
       created: ->
@@ -184,7 +187,7 @@ if Meteor.isClient
         console.log "dragover"
         event.preventDefault()
 
-      "drop .new_filter": (event) ->
+      "drop .rule": (event) ->
         event.stopPropagation()
         event.preventDefault()
         type = event.dataTransfer.getData('text/plain')
