@@ -161,7 +161,7 @@ if Meteor.isClient
     Template.twitterRules.noRules = ->
       TwitterRules.find().count() == 0
 
-    Template.rulesActive.activeEvents = ->
+    Template.twitterRules.activeEvents = ->
       TwitterRules.find({type: {$in: ["hashtag", "repeat"]}})
 
     Template.rulesActive.ruleTypes = ->
