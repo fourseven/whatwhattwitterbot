@@ -180,7 +180,7 @@ if Meteor.isClient
         event.target.style.opacity = '1.0'
         event.preventDefault()
 
-      "dragover .rules-active": (event) ->
+      "dragover .noRules": (event) ->
         console.log "dragover"
         event.preventDefault()
 
@@ -196,7 +196,7 @@ if Meteor.isClient
           TwitterRules.update({_id: @_id}, {$set: {nextActionId: newId}})
         console.log("New filter")
 
-      "drop .rules-active": (event) ->
+      "drop .noRules": (event) ->
         event.dataTransfer.dropEffect = "copy"
         console.log "dropped #{event.target.innerHTML}"
         event.preventDefault()
